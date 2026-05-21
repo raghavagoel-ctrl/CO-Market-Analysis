@@ -1,0 +1,15 @@
+# Raw internal sales data — never commit
+data/*.xlsx
+data/*.xls
+data/derived/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Temp copies from parse script
+**/ColombiaBO_temp.xlsx
+
+# Portable git tooling (local only)
+.tools/
