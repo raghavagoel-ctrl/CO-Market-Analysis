@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Colombia Bus Corridors — redBus (All Operators)</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: #0b1520; color: #d0dce8; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+#header { background: #0d1b2a; border-bottom: 1px solid #1c3550; padding: 0 20px; height: 52px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 1000; }
+.header-left { display: flex; align-items: center; gap: 14px; }
+.logo-pill { background: #e8412a; color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 4px; letter-spacing: 0.5px; }
+.header-title { font-size: 14px; font-weight: 600; color: #fff; }
+.header-sub { font-size: 11px; color: #5a7a9a; margin-top: 1px; }
+.stat-pills { display: flex; gap: 8px; }
+.stat-pill { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1px solid; }
+.stat-pill.neg  { background: #1f0e0e; color: #ef5350; border-color: #6a1f1f; }
+.stat-pill.info { background: #0e1f35; color: #64b5f6; border-color: #1c4470; }
+.stat-pill.flat { background: #0e2a1a; color: #4caf50; border-color: #2d6a3f; }
+#body { display: flex; flex: 1; overflow: hidden; }
+#map  { flex: 1; }
+#sidebar { width: 300px; flex-shrink: 0; background: #0d1b2a; border-left: 1px solid #1c3550; display: flex; flex-direction: column; overflow: hidden; }
+#sidebar-scroll { flex: 1; overflow-y: auto; padding-bottom: 12px; }
+#sidebar-scroll::-webkit-scrollbar { width: 4px; }
+#sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+#sidebar-scroll::-webkit-scrollbar-thumb { background: #1c3550; border-radius: 2px; }
+.s-section { padding: 14px 16px; border-bottom: 1px solid #1c3550; }
+.s-title { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #3a6a9a; margin-bottom: 10px; }
+.toggle-row { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; cursor: pointer; margin-bottom: 4px; border: 1px solid #1c3550; background: #0b1520; transition: all 0.15s; user-select: none; }
+.toggle-row:hover { border-color: #2a4e70; }
+.toggle-row.on { border-color: #2a5070; background: #0f2035; }
+.toggle-swatch { width: 28px; height: 6px; border-radius: 3px; flex-shrink: 0; }
+.toggle-label { font-size: 12px; color: #9ab5cc; flex: 1; }
+.toggle-row.on .toggle-label { color: #c8daea; }
+.toggle-knob { width: 28px; height: 14px; background: #1c3550; border-radius: 7px; position: relative; flex-shrink: 0; transition: background 0.2s; }
+.toggle-knob::after { content: ''; position: absolute; top: 2px; left: 2px; width: 10px; height: 10px; background: #4a7a9a; border-radius: 50%; transition: all 0.2s; }
+.toggle-row.on .toggle-knob { background: #1a4a7a; }
+.toggle-row.on .toggle-knob::after { left: 16px; background: #64b5f6; }
+.grad-bar { height: 10px; border-radius: 5px; background: linear-gradient(to right,#b71c1c,#e53935,#ff7043,#ffb74d,#fff59d,#aed581,#4caf50,#1b5e20); margin: 8px 0 4px; }
+.grad-labels { display: flex; justify-content: space-between; font-size: 10px; color: #4a7a9a; }
+.legend-line { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 11px; color: #7a9ab5; }
+.legend-line-swatch { height: 3px; width: 24px; border-radius: 2px; }
+.corr-row { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid #112030; cursor: pointer; transition: background 0.1s; }
+.corr-row:hover { background: #0f2035; margin: 0 -16px; padding: 7px 16px; }
+.corr-track { width: 3px; border-radius: 2px; align-self: stretch; min-height: 30px; flex-shrink: 0; }
+.corr-info { flex: 1; }
+.corr-name { font-size: 12px; color: #b0c8e0; line-height: 1.3; }
+.corr-sub { font-size: 10px; color: #4a7a9a; margin-top: 1px; }
+.corr-pct { font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.dis-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid #112030; cursor: pointer; transition: background 0.1s; }
+.dis-row:hover { background: #0f2035; margin: 0 -16px; padding: 8px 16px; }
+.dis-badge { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; border: 1.5px solid; margin-top: 1px; }
+.dis-text { flex: 1; }
+.dis-name { font-size: 12px; color: #b0c8e0; line-height: 1.3; font-weight: 500; }
+.dis-detail { font-size: 10.5px; color: #4a7a9a; margin-top: 2px; line-height: 1.4; }
+.leaflet-popup-content-wrapper { background: #0d1b2a !important; color: #d0dce8 !important; border: 1px solid #1c4060 !important; border-radius: 10px !important; box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important; }
+.leaflet-popup-tip-container { display: none; }
+.leaflet-popup-content { margin: 0 !important; }
+.popup-inner { padding: 14px 16px; min-width: 200px; }
+.popup-head { font-size: 14px; font-weight: 700; color: #fff; border-bottom: 1px solid #1c4060; padding-bottom: 8px; margin-bottom: 10px; }
+.popup-kv { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; gap: 12px; }
+.popup-k { color: #4a8ab5; }
+.popup-v { color: #c8daea; font-weight: 600; }
+.popup-pos { color: #4caf50; font-weight: 700; }
+.popup-neg { color: #ef5350; font-weight: 700; }
+.popup-alert { margin-top: 10px; background: #0f2035; border-left: 3px solid #ffa726; padding: 8px 10px; border-radius: 0 6px 6px 0; font-size: 11px; color: #b0c8e0; line-height: 1.5; }
+.popup-alert-head { font-size: 10px; color: #ffa726; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 3px; }
+@keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 0.8; } 70% { transform: scale(1.6); opacity: 0; } 100% { transform: scale(1.6); opacity: 0; } }
+.leaflet-control-zoom a { background: #0d1b2a !important; color: #64b5f6 !important; border-color: #1c3550 !important; }
+.leaflet-control-zoom a:hover { background: #1c3550 !important; }
+.leaflet-control-attribution { background: rgba(13,27,42,0.8) !important; color: #2a4a6a !important; font-size: 10px !important; }
+.leaflet-control-attribution a { color: #3a6a9a !important; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div class="header-left">
+    <div class="logo-pill">redBus</div>
+    <div>
+      <div class="header-title">Colombia — Intercity Bus Corridor Analysis (All Operators)</div>
+      <div class="header-sub">Mar–May 2025 vs Mar–May 2026 &nbsp;·&nbsp; 125 Operators &nbsp;·&nbsp; Route-level YoY</div>
+    </div>
+  </div>
+  <div class="stat-pills">
+    <div class="stat-pill neg">Market Overall: &minus;0.9% YoY</div>
+    <div class="stat-pill info">116,482 &rarr; 115,481 Txns</div>
+    <div class="stat-pill flat">125 Active Operators</div>
+  </div>
+</div>
+
+<div id="body">
+  <div id="map"></div>
+  <div id="sidebar">
+    <div id="sidebar-scroll">
+      <div class="s-section">
+        <div class="s-title">Map Layers</div>
+        <div class="toggle-row on" id="tgl-dept" onclick="toggleLayer('dept',this)">
+          <div class="toggle-swatch" style="background:linear-gradient(to right,#e53935,#4caf50)"></div>
+          <span class="toggle-label">Department Performance</span>
+          <div class="toggle-knob"></div>
+        </div>
+        <div class="toggle-row on" id="tgl-corridors" onclick="toggleLayer('corridors',this)">
+          <div class="toggle-swatch" style="background:linear-gradient(to right,#ef5350,#00e676)"></div>
+          <span class="toggle-label">Corridor Flows</span>
+          <div class="toggle-knob"></div>
+        </div>
+        <div class="toggle-row on" id="tgl-disruptions" onclick="toggleLayer('disruptions',this)">
+          <div class="toggle-swatch" style="background:linear-gradient(to right,#ffa726,#ef5350,#42a5f5)"></div>
+          <span class="toggle-label">Disruption Events</span>
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
+      <div class="s-section">
+        <div class="s-title">Department YoY (All Routes)</div>
+        <div class="grad-bar"></div>
+        <div class="grad-labels"><span>&minus;30%+</span><span>0%</span><span>+30%+</span></div>
+        <div class="legend-line">
+          <div class="legend-line-swatch" style="background:#00e676"></div>
+          <span>Growing corridor (solid)</span>
+        </div>
+        <div class="legend-line">
+          <div class="legend-line-swatch" style="background:#ff5252;background:repeating-linear-gradient(to right,#ff5252 0,#ff5252 6px,transparent 6px,transparent 10px)"></div>
+          <span>Declining corridor (dashed)</span>
+        </div>
+        <div class="legend-line" style="margin-top:6px;gap:6px;">
+          <svg width="42" height="14" viewBox="0 0 42 14">
+            <circle cx="7" cy="7" r="6" fill="#b71c1c" stroke="#ef5350" stroke-width="1.5"/>
+            <circle cx="21" cy="7" r="6" fill="#e65100" stroke="#ffa726" stroke-width="1.5"/>
+            <circle cx="35" cy="7" r="6" fill="#1565C0" stroke="#42a5f5" stroke-width="1.5"/>
+          </svg>
+          <span>Conflict / Policy / Natural</span>
+        </div>
+      </div>
+      <div class="s-section">
+        <div class="s-title">Top Growing Corridors</div>
+        <div id="growing-list"></div>
+      </div>
+      <div class="s-section">
+        <div class="s-title">Top Declining Corridors</div>
+        <div id="declining-list"></div>
+      </div>
+      <div class="s-section">
+        <div class="s-title">Disruption Events</div>
+        <div id="disruption-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  DATA — Full market (125 operators, Mar–May 2025 vs 2026)
+// ══════════════════════════════════════════════════════
+
+const DEPTS = {
+  'D.C':  {lat:4.711, lon:-74.072, name:'Bogotá D.C.',       region:'Bogotá Capital',  t25:27990,t26:25278,yoy:-9.7},
+  'Ant':  {lat:6.244, lon:-75.574, name:'Antioquia',          region:'Andean',          t25:25571,t26:24373,yoy:-4.7},
+  'San':  {lat:7.119, lon:-73.122, name:'Santander',          region:'Andean NE',       t25:9641, t26:9609, yoy:-0.3},
+  'Vac':  {lat:3.800, lon:-76.600, name:'Valle del Cauca',    region:'Pacific',         t25:8500, t26:9364, yoy:10.2},
+  'Tol':  {lat:4.100, lon:-75.100, name:'Tolima',             region:'Andean',          t25:7166, t26:8294, yoy:15.7},
+  'Hui':  {lat:2.528, lon:-75.282, name:'Huila',              region:'Andean South',    t25:6470, t26:7275, yoy:12.4},
+  'Ris':  {lat:4.814, lon:-75.694, name:'Risaralda',          region:'Eje Cafetero',    t25:4712, t26:4604, yoy:-2.3},
+  'Cal':  {lat:5.070, lon:-75.513, name:'Caldas',             region:'Eje Cafetero',    t25:3566, t26:4116, yoy:15.4},
+  'Ces':  {lat:10.000,lon:-73.253, name:'Cesar',              region:'Caribbean NE',    t25:3109, t26:3465, yoy:11.5},
+  'Atl':  {lat:10.964,lon:-74.796, name:'Atlántico',          region:'Caribbean',       t25:3246, t26:2937, yoy:-9.5},
+  'Mag':  {lat:10.420,lon:-74.215, name:'Magdalena',          region:'Caribbean',       t25:3410, t26:2840, yoy:-16.7},
+  'Qui':  {lat:4.534, lon:-75.700, name:'Quindío',            region:'Eje Cafetero',    t25:3513, t26:2611, yoy:-25.7},
+  'Boy':  {lat:5.535, lon:-73.364, name:'Boyacá',             region:'Andean',          t25:2556, t26:2407, yoy:-5.8},
+  'Bol':  {lat:8.500, lon:-74.881, name:'Bolívar',            region:'Caribbean',       t25:2745, t26:2207, yoy:-19.6},
+  'N.San':{lat:7.893, lon:-72.507, name:'Norte de Santander', region:'Andean NE Border',t25:1956, t26:1894, yoy:-3.2},
+  'Nar':  {lat:1.500, lon:-77.282, name:'Nariño',             region:'Pacific South',   t25:1030, t26:1547, yoy:50.1},
+  'Meta': {lat:3.500, lon:-73.200, name:'Meta',               region:'Llanos East',     t25:1669, t26:1367, yoy:-18.1},
+  'Cor':  {lat:8.300, lon:-75.885, name:'Córdoba',            region:'Caribbean',       t25:1097, t26:1094, yoy:-0.3},
+  'Cun':  {lat:4.960, lon:-73.500, name:'Cundinamarca',       region:'Andean',          t25:1282, t26:1052, yoy:-17.9},
+  'Caq':  {lat:1.614, lon:-75.607, name:'Caquetá',            region:'Amazon',          t25:960,  t26:1033, yoy:7.6},
+  'Cau':  {lat:2.441, lon:-76.606, name:'Cauca',              region:'Pacific',         t25:974,  t26:790,  yoy:-18.9},
+  'Suc':  {lat:9.304, lon:-75.397, name:'Sucre',              region:'Caribbean',       t25:693,  t26:654,  yoy:-5.6},
+  'Put':  {lat:1.152, lon:-76.649, name:'Putumayo',           region:'Amazon',          t25:495,  t26:653,  yoy:32.0},
+  'Guaj': {lat:11.200,lon:-72.507, name:'La Guajira',         region:'Caribbean Far NE',t25:670,  t26:518,  yoy:-22.8},
+  'Cas':  {lat:5.300, lon:-72.000, name:'Casanare',           region:'Llanos East',     t25:443,  t26:375,  yoy:-15.3},
+  'Cho':  {lat:5.694, lon:-76.658, name:'Chocó',              region:'Pacific NW',      t25:154,  t26:192,  yoy:24.4},
+  'Ara':  {lat:6.854, lon:-71.013, name:'Arauca dept',        region:'Llanos East',     t25:141,  t26:72,   yoy:-49.3},
+};
+
+const CORRIDORS = [
+  {from:'Vac', to:'Nar',  t25:1363, t26:2123,yoy:55.8, label:'Cali ↔ Pasto',              sub:'Vac ↔ Nar',   cause:'ELN Comuneros del Sur disarmed Apr 2025 — Pacific south corridor fully reopened after years of closure',          causeType:'security'},
+  {from:'Hui', to:'Tol',  t25:1458, t26:1963,yoy:34.6, label:'Neiva ↔ Ibagué',            sub:'Hui ↔ Tol',   cause:'South Andean bypass growing as Bogotá-centric routes weaken; Huila-Tolima direct link gains share',              causeType:'indirect'},
+  {from:'Vac', to:'Ris',  t25:1445, t26:1935,yoy:33.9, label:'Cali ↔ Pereira',            sub:'Vac ↔ Ris',   cause:'Pacific-Cafetero arc benefiting from Bogotá avoidance; regional hub-to-hub connectivity strengthening',          causeType:'indirect'},
+  {from:'Mag', to:'Ces',  t25:1287, t26:1699,yoy:32.0, label:'Santa Marta ↔ Valledupar',  sub:'Mag ↔ Ces',   cause:'Inland rerouting away from blocked Troncal del Caribe coastal highway (Jul 2025 blockade)',                      causeType:'indirect'},
+  {from:'Ant', to:'Cal',  t25:2179, t26:2875,yoy:31.9, label:'Medellín ↔ Caldas',         sub:'Ant ↔ Cal',   cause:'Antioquia-Caldas bypass growing; Bogotá-Eje Cafetero routes disrupted by Autopistas del Café concession reversal',causeType:'policy'},
+  {from:'Tol', to:'Ant',  t25:3867, t26:4350,yoy:12.5, label:'Ibagué ↔ Medellín',         sub:'Tol ↔ Ant',   cause:'Cross-Andes bypass corridor gaining share from disrupted Bogotá routes (landslides, La Niña suppression)',         causeType:'natural'},
+  {from:'N.San',to:'San', t25:1069, t26:1176,yoy:10.0, label:'Cúcuta ↔ Bucaramanga',      sub:'N.San ↔ San', cause:'Venezuelan migration surge — 10M+ border crossings via Cúcuta in 2026 driving migrant transit demand',             causeType:'migration'},
+  {from:'Hui', to:'D.C',  t25:5635, t26:6011,yoy:6.7,  label:'Neiva ↔ Bogotá',            sub:'Hui ↔ D.C',   cause:'Southern inbound to Bogotá resilient; Neiva (Huila) is key Andean south gateway with stable demand',              causeType:'none'},
+  {from:'Ant', to:'Qui',  t25:2300, t26:829, yoy:-64.0,label:'Medellín ↔ Armenia',         sub:'Ant ↔ Qui',   cause:'Autopistas del Café concession reversal Jan 2026 + 20% toll hike — worst-affected corridor in the market',       causeType:'policy'},
+  {from:'Bol', to:'Mag',  t25:1782, t26:757, yoy:-57.5,label:'Cartagena ↔ Santa Marta',   sub:'Bol ↔ Mag',   cause:'Troncal del Caribe blockade Jul 2025 + Caribbean La Niña floods Feb 2026 (50,000+ displaced)',                    causeType:'both'},
+  {from:'Ant', to:'Mag',  t25:479,  t26:316, yoy:-34.0,label:'Medellín ↔ Santa Marta',    sub:'Ant ↔ Mag',   cause:'Caribbean coast accessibility deterioration (floods + blockade) reducing long-haul demand from Antioquia',          causeType:'natural'},
+  {from:'D.C', to:'Qui',  t25:2464, t26:1856,yoy:-24.7,label:'Bogotá ↔ Armenia',          sub:'D.C ↔ Qui',   cause:'Autopistas del Café concession reversal Jan 2026 + 20% toll hike on Bogotá-originating Eje Cafetero routes',      causeType:'policy'},
+  {from:'D.C', to:'Ant',  t25:7672, t26:6173,yoy:-19.5,label:'Bogotá ↔ Medellín',         sub:'D.C ↔ Ant',   cause:'Autopista closures: repeated landslides near Copacabana (May 2025 & Nov 2025); highest volume declining corridor',  causeType:'natural'},
+  {from:'D.C', to:'Meta', t25:3173, t26:2597,yoy:-18.2,label:'Bogotá ↔ Villavicencio',    sub:'D.C ↔ Meta',  cause:'FARC-EMC conflict escalation in Meta; ELN ceasefire collapse Jan 2025; violence +45% Q1 2025',                     causeType:'security'},
+  {from:'D.C', to:'Vac',  t25:5128, t26:4557,yoy:-11.1,label:'Bogotá ↔ Cali',             sub:'D.C ↔ Vac',   cause:'La Niña flooding Feb 2026 + sustained Bogotá outbound demand suppression across all directions',                   causeType:'natural'},
+  {from:'D.C', to:'San',  t25:7004, t26:6393,yoy:-8.7, label:'Bogotá ↔ Bucaramanga',      sub:'D.C ↔ San',   cause:'Bogotá outbound suppression; mountain highway landslide risk; second highest-volume declining corridor',             causeType:'natural'},
+];
+
+const DISRUPTIONS = [
+  {lat:6.10, lon:-75.40,type:'natural',   color:'#e65100',border:'#ff7043',letter:'L', label:'Landslide — Medellín–Bogotá Highway',    detail:'Repeated closures May & Nov 2025 near Copacabana. Worst-hit: D.C|Ant corridor −19.5%. 40.8% of municipalities under alert.'},
+  {lat:9.00, lon:-75.20,type:'natural',   color:'#1565C0',border:'#42a5f5',letter:'F', label:'Caribbean Floods — Feb 2026',            detail:'La Niña tropical storms. 50,000+ families displaced. Bol|Mag corridor −57.5%. Atl −9.5%, Mag −16.7%.'},
+  {lat:10.8, lon:-74.0, type:'political', color:'#e65100',border:'#ffa726',letter:'B', label:'Troncal del Caribe Blockade — Jul 2025', detail:'Indigenous/peasant blockade of 1,020 km coastal highway. Inland Cesar/Sucre gained; coastal Mag/Bol collapsed.'},
+  {lat:3.50, lon:-73.50,type:'security',  color:'#b71c1c',border:'#ef5350',letter:'C', label:'FARC-EMC / ELN Conflict — Meta 2025',   detail:'FARC dissidents + ELN ceasefire collapse Jan 2025. Violence +45% Q1 2025. Meta|D.C −18.2%, Meta −18.1%.'},
+  {lat:8.00, lon:-73.10,type:'security',  color:'#b71c1c',border:'#ef5350',letter:'C', label:'Catatumbo Clashes — Norte Santander',   detail:'ELN vs FARC-EMC. 60+ deaths, 18,000+ displaced Jan 2025. N.San partially offset by migration demand (+10%).'},
+  {lat:4.80, lon:-75.60,type:'policy',    color:'#4a148c',border:'#ab47bc',letter:'P', label:'Autopistas del Café Reversal — Jan 2026',detail:'ANI reversed Eje Cafetero concession. 20% toll hike. Ant|Qui −64% (worst corridor). D.C|Qui −24.7%.'},
+  {lat:1.40, lon:-77.50,type:'security',  color:'#1b5e20',border:'#4caf50',letter:'+', label:'ELN Disarmament — Nariño Apr 2025',     detail:'Comuneros del Sur faction disarmed. Vac|Nar corridor +55.8%. Nariño dept overall +50.1% — top growing dept.'},
+  {lat:7.89, lon:-72.51,type:'migration', color:'#006064',border:'#26c6da',letter:'M', label:'Venezuela Migration — Cúcuta 2026',     detail:'10M+ border crossings in 2026. Cúcuta–Bucaramanga +10%. N.San stable despite Catatumbo conflict.'},
+  {lat:4.30, lon:-74.20,type:'natural',   color:'#1565C0',border:'#42a5f5',letter:'N', label:'La Niña Flooding — Bogotá Region',      detail:'Sustained heavy rains Feb 2026. Bogotá outbound suppressed: D.C|Ant −19.5%, D.C|Vac −11.1%, D.C −9.7% overall.'},
+];
+
+// ══════════════════════════════════════════════════════
+//  MAP INIT
+// ══════════════════════════════════════════════════════
+
+const map = L.map('map',{center:[4.8,-74.5],zoom:6,zoomControl:true,preferCanvas:false});
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_matter_no_labels/{z}/{x}/{y}{r}.png',{
+  attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19
+}).addTo(map);
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_matter_only_labels/{z}/{x}/{y}{r}.png',{
+  attribution:'',subdomains:'abcd',maxZoom:19,pane:'overlayPane'
+}).addTo(map);
+
+// ══════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════
+
+function yoyFill(v){
+  if(v>=40)  return '#1b5e20';
+  if(v>=20)  return '#388e3c';
+  if(v>=8)   return '#8bc34a';
+  if(v>=0)   return '#cddc39';
+  if(v>=-5)  return '#fff176';
+  if(v>=-12) return '#ffb74d';
+  if(v>=-22) return '#f44336';
+  return '#b71c1c';
+}
+function corrColor(yoy){return yoy>=0?'#00e676':'#ff5252';}
+function fmtPct(v){return (v>0?'+':'')+v.toFixed(1)+'%';}
+function fmtNum(n){return Number(n).toLocaleString();}
+
+function bezierPoints(a,b,curvature=0.3){
+  const mlat=(a.lat+b.lat)/2, mlon=(a.lon+b.lon)/2;
+  const dlat=b.lat-a.lat, dlon=b.lon-a.lon;
+  const len=Math.sqrt(dlat*dlat+dlon*dlon)||1;
+  const cl=mlat-dlon/len*curvature*len;
+  const cm=mlon+dlat/len*curvature*len;
+  const pts=[];
+  for(let t=0;t<=1;t+=0.05){
+    const u=1-t;
+    pts.push([u*u*a.lat+2*u*t*cl+t*t*b.lat, u*u*a.lon+2*u*t*cm+t*t*b.lon]);
+  }
+  return pts;
+}
+
+function arrowhead(pts, color){
+  const n=pts.length;
+  if(n<2) return null;
+  const [la,lo]=pts[n-1];
+  const [la2,lo2]=pts[Math.max(0,n-3)];
+  const angle=Math.atan2(la-la2,lo-lo2)*180/Math.PI;
+  return L.marker([la,lo],{
+    icon: L.divIcon({
+      html:`<svg width="12" height="12" viewBox="0 0 12 12" style="transform:rotate(${angle-90}deg)"><polygon points="6,0 12,12 6,9 0,12" fill="${color}" opacity="0.85"/></svg>`,
+      className:'', iconSize:[12,12], iconAnchor:[6,6]
+    }), interactive:false
+  });
+}
+
+// ══════════════════════════════════════════════════════
+//  LAYER GROUPS
+// ══════════════════════════════════════════════════════
+
+const lgDept  = L.layerGroup().addTo(map);
+const lgCorr  = L.layerGroup().addTo(map);
+const lgDisr  = L.layerGroup().addTo(map);
+const layers  = {dept:lgDept, corridors:lgCorr, disruptions:lgDisr};
+const layerOn = {dept:true, corridors:true, disruptions:true};
+
+function toggleLayer(name, row){
+  layerOn[name]=!layerOn[name];
+  if(layerOn[name]) map.addLayer(layers[name]); else map.removeLayer(layers[name]);
+  row.classList.toggle('on', layerOn[name]);
+}
+
+// ══════════════════════════════════════════════════════
+//  DEPARTMENT LAYER
+// ══════════════════════════════════════════════════════
+
+const GEONAME = {
+  'BOGOTÁ, D.C.':'D.C','BOGOTÁ D.C.':'D.C','BOGOTA D.C.':'D.C','BOGOTA, D.C.':'D.C','SANTAFÉ DE BOGOTÁ D.C.':'D.C',
+  'ANTIOQUIA':'Ant','VALLE DEL CAUCA':'Vac','SANTANDER':'San','HUILA':'Hui',
+  'TOLIMA':'Tol','RISARALDA':'Ris','CALDAS':'Cal','ATLÁNTICO':'Atl','ATLANTICO':'Atl',
+  'MAGDALENA':'Mag','CESAR':'Ces','QUINDÍO':'Qui','QUINDIO':'Qui',
+  'BOLÍVAR':'Bol','BOLIVAR':'Bol','META':'Meta','NORTE DE SANTANDER':'N.San',
+  'CÓRDOBA':'Cor','CORDOBA':'Cor','CAQUETÁ':'Caq','CAQUETA':'Caq',
+  'CUNDINAMARCA':'Cun','SUCRE':'Suc','PUTUMAYO':'Put','BOYACÁ':'Boy','BOYACA':'Boy',
+  'CHOCÓ':'Cho','CHOCO':'Cho','NARIÑO':'Nar','NARINO':'Nar',
+  'CAUCA':'Cau','ARAUCA':'Ara','CASANARE':'Cas','LA GUAJIRA':'Guaj','GUAJIRA':'Guaj',
+  'VICHADA':'Vic','GUAINÍA':'x','VAUPÉS':'x','AMAZONAS':'x','GUAVIARE':'x','SAN ANDRÉS':'x','SAN ANDRES':'x'
+};
+
+function deptPopupHtml(d){
+  const yStr=d.yoy>=0?`<span class="popup-pos">+${d.yoy}%</span>`:`<span class="popup-neg">${d.yoy}%</span>`;
+  return `<div class="popup-inner">
+    <div class="popup-head">${d.name}</div>
+    <div class="popup-kv"><span class="popup-k">Region</span><span class="popup-v">${d.region}</span></div>
+    <div class="popup-kv"><span class="popup-k">2025 Volume</span><span class="popup-v">${fmtNum(d.t25)}</span></div>
+    <div class="popup-kv"><span class="popup-k">2026 Volume</span><span class="popup-v">${fmtNum(d.t26)}</span></div>
+    <div class="popup-kv"><span class="popup-k">YoY</span><span class="popup-v">${yStr}</span></div>
+  </div>`;
+}
+
+const GEO_URLS=[
+  'https://raw.githubusercontent.com/jdaroesti/col-administrative-division-polygon/master/departamentos/departamentos.geojson',
+  'https://gist.githubusercontent.com/john-guerra/43c7656821069d00dcbc/raw/be6a6e239cd5b5b803c6e7c2ec405b793a9064dd/Colombia.geo.json'
+];
+
+let geoLoaded=false;
+function tryGeo(urls,i=0){
+  if(i>=urls.length){renderDeptCircles();return;}
+  fetch(urls[i]).then(r=>r.ok?r.json():Promise.reject()).then(geo=>{
+    geoLoaded=true;
+    L.geoJSON(geo,{
+      style:f=>{
+        const raw=((f.properties.NOMBRE_DPT||f.properties.DPTO_CNMBR||f.properties.NOMBRE||'')+'').toUpperCase().trim();
+        const code=GEONAME[raw];
+        const d=DEPTS[code];
+        return{fillColor:d?yoyFill(d.yoy):'#1a2a3a',fillOpacity:d?0.72:0.2,color:'#0d1b2a',weight:1};
+      },
+      onEachFeature:(f,layer)=>{
+        const raw=((f.properties.NOMBRE_DPT||f.properties.DPTO_CNMBR||f.properties.NOMBRE||'')+'').toUpperCase().trim();
+        const code=GEONAME[raw];
+        const d=DEPTS[code];
+        if(d){
+          layer.bindPopup(deptPopupHtml(d),{maxWidth:260});
+          layer.on('mouseover',()=>layer.setStyle({fillOpacity:0.92,weight:2,color:'#4a8ab5'}));
+          layer.on('mouseout', ()=>layer.setStyle({fillOpacity:0.72,weight:1,color:'#0d1b2a'}));
+        }
+      }
+    }).addTo(lgDept);
+    renderDeptCircles(true);
+  }).catch(()=>tryGeo(urls,i+1));
+}
+tryGeo(GEO_URLS);
+
+function renderDeptCircles(onPoly=false){
+  Object.values(DEPTS).forEach(d=>{
+    const vol=Math.sqrt(Math.max(d.t25,d.t26));
+    const r=onPoly?Math.max(4,vol*0.055):Math.max(8,vol*0.20);
+    L.circleMarker([d.lat,d.lon],{
+      radius:r, fillColor:yoyFill(d.yoy), fillOpacity:0.95,
+      color:'#0b1520', weight:1.5
+    }).bindPopup(deptPopupHtml(d),{maxWidth:260}).addTo(lgDept);
+  });
+}
+
+// ══════════════════════════════════════════════════════
+//  CORRIDOR LAYER
+// ══════════════════════════════════════════════════════
+
+CORRIDORS.forEach(c=>{
+  const A=DEPTS[c.from],B=DEPTS[c.to];
+  if(!A||!B) return;
+  const col=corrColor(c.yoy);
+  const vol=Math.max(c.t25,c.t26);
+  const wt=Math.max(2,Math.min(8,vol/600));
+  const pts=bezierPoints(A,B,0.28);
+
+  const line=L.polyline(pts,{color:col, weight:wt, opacity:0.82, dashArray:c.yoy<0?'8 5':null});
+  const causeHtml=c.cause?`<div class="popup-alert"><div class="popup-alert-head">DISRUPTION LINK</div>${c.cause}</div>`:'';
+  const yStr=c.yoy>=0?`<span class="popup-pos">${fmtPct(c.yoy)}</span>`:`<span class="popup-neg">${fmtPct(c.yoy)}</span>`;
+  line.bindPopup(`<div class="popup-inner">
+    <div class="popup-head">${c.label}</div>
+    <div class="popup-kv"><span class="popup-k">2025 Volume</span><span class="popup-v">${fmtNum(c.t25)}</span></div>
+    <div class="popup-kv"><span class="popup-k">2026 Volume</span><span class="popup-v">${fmtNum(c.t26)}</span></div>
+    <div class="popup-kv"><span class="popup-k">YoY Change</span><span class="popup-v">${yStr}</span></div>
+    ${causeHtml}
+  </div>`,{maxWidth:290});
+  line.addTo(lgCorr);
+  const ah=arrowhead(pts,col);
+  if(ah) ah.addTo(lgCorr);
+});
+
+// ══════════════════════════════════════════════════════
+//  DISRUPTION MARKERS
+// ══════════════════════════════════════════════════════
+
+DISRUPTIONS.forEach(d=>{
+  const pulse=d.type==='security'||d.type==='natural'?
+    `<div style="position:absolute;inset:0;border-radius:50%;border:2px solid ${d.border};opacity:0;animation:pulse-ring 2s ease-out infinite;"></div>`:'';
+  const svgIcon=`
+    <div style="position:relative;width:32px;height:32px;">
+      ${pulse}
+      <svg width="32" height="32" viewBox="0 0 32 32" style="position:absolute;top:0;left:0;">
+        <circle cx="16" cy="16" r="13" fill="${d.color}" stroke="${d.border}" stroke-width="2.5"/>
+        <text x="16" y="21" text-anchor="middle" font-family="Inter,Arial,sans-serif"
+              font-size="${d.letter.length>1?10:13}" font-weight="800" fill="#ffffff">${d.letter}</text>
+      </svg>
+    </div>`;
+  const icon=L.divIcon({html:svgIcon,className:'',iconSize:[32,32],iconAnchor:[16,16]});
+  L.marker([d.lat,d.lon],{icon})
+   .bindPopup(`<div class="popup-inner">
+      <div class="popup-head">${d.label}</div>
+      <div style="font-size:12px;color:#9ab5cc;line-height:1.6;">${d.detail}</div>
+    </div>`,{maxWidth:270})
+   .addTo(lgDisr);
+});
+
+// ══════════════════════════════════════════════════════
+//  SIDEBAR LISTS
+// ══════════════════════════════════════════════════════
+
+const growing  =CORRIDORS.filter(c=>c.yoy>0).sort((a,b)=>b.yoy-a.yoy);
+const declining=CORRIDORS.filter(c=>c.yoy<0).sort((a,b)=>a.yoy-b.yoy);
+
+function makeCorrList(items,elId){
+  const el=document.getElementById(elId);
+  items.forEach(c=>{
+    const col=corrColor(c.yoy);
+    const div=document.createElement('div');
+    div.className='corr-row';
+    div.innerHTML=`
+      <div class="corr-track" style="background:${col}"></div>
+      <div class="corr-info">
+        <div class="corr-name">${c.label}</div>
+        <div class="corr-sub">${fmtNum(c.t25)} &rarr; ${fmtNum(c.t26)}</div>
+      </div>
+      <div class="corr-pct" style="color:${col}">${c.yoy>0?'+':''}${c.yoy.toFixed(0)}%</div>`;
+    div.onclick=()=>{
+      const A=DEPTS[c.from],B=DEPTS[c.to];
+      if(A&&B) map.fitBounds([[Math.min(A.lat,B.lat)-0.5,Math.min(A.lon,B.lon)-0.5],[Math.max(A.lat,B.lat)+0.5,Math.max(A.lon,B.lon)+0.5]]);
+    };
+    el.appendChild(div);
+  });
+}
+makeCorrList(growing,'growing-list');
+makeCorrList(declining,'declining-list');
+
+const disEl=document.getElementById('disruption-list');
+DISRUPTIONS.forEach(d=>{
+  const div=document.createElement('div');
+  div.className='dis-row';
+  div.innerHTML=`
+    <div class="dis-badge" style="background:${d.color};border-color:${d.border};color:#fff;">${d.letter}</div>
+    <div class="dis-text">
+      <div class="dis-name">${d.label}</div>
+      <div class="dis-detail">${d.detail}</div>
+    </div>`;
+  div.onclick=()=>map.setView([d.lat,d.lon],8);
+  disEl.appendChild(div);
+});
+</script>
+</body>
+</html>

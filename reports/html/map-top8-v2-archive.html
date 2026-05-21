@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Colombia Bus Corridors — redBus Geographic Analysis</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f1923; color: #e0e0e0; display: flex; flex-direction: column; height: 100vh; }
+
+  /* Header */
+  #header {
+    background: linear-gradient(135deg, #0d2137, #1a3a5c);
+    padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 2px solid #e8412a;
+    flex-shrink: 0;
+  }
+  #header h1 { font-size: 16px; font-weight: 700; color: #fff; }
+  #header h1 span { color: #e8412a; }
+  #header .meta { font-size: 11px; color: #8a9bb0; margin-top: 2px; }
+  .overall-badge {
+    background: #1e4d2b; color: #4caf50; font-size: 13px; font-weight: 700;
+    padding: 5px 14px; border-radius: 20px; border: 1px solid #4caf50;
+  }
+
+  /* Main layout */
+  #main { display: flex; flex: 1; overflow: hidden; }
+
+  /* Map */
+  #map { flex: 1; z-index: 1; }
+
+  /* Sidebar */
+  #sidebar {
+    width: 300px; flex-shrink: 0;
+    background: #121e2d;
+    overflow-y: auto;
+    border-left: 1px solid #1e3a5c;
+    display: flex; flex-direction: column;
+  }
+
+  .panel { padding: 14px 16px; border-bottom: 1px solid #1e3a5c; }
+  .panel-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: #5a7fa0; margin-bottom: 10px;
+  }
+
+  /* Toggle buttons */
+  .layer-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: #0d1e2f; border: 1px solid #1e3a5c;
+    color: #c0d0e0; font-size: 12px; padding: 7px 10px;
+    border-radius: 6px; cursor: pointer; margin-bottom: 6px; width: 100%;
+    transition: all 0.2s;
+  }
+  .layer-btn.active { border-color: #e8412a; background: #1a1a2a; color: #fff; }
+  .layer-btn .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Legend */
+  .legend-grad {
+    height: 12px; border-radius: 6px;
+    background: linear-gradient(to right, #e53935, #ef9a9a, #fff9c4, #a5d6a7, #2e7d32);
+    margin: 6px 0 3px;
+  }
+  .legend-labels { display: flex; justify-content: space-between; font-size: 10px; color: #7a9ab5; }
+
+  /* Corridor list */
+  .corr-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 0; border-bottom: 1px solid #1a2e40; cursor: pointer;
+  }
+  .corr-item:hover { background: #0d1e2f; margin: 0 -16px; padding: 6px 16px; }
+  .corr-bar { width: 4px; border-radius: 2px; flex-shrink: 0; align-self: stretch; min-height: 28px; }
+  .corr-name { font-size: 12px; color: #c8d8e8; line-height: 1.3; flex: 1; }
+  .corr-yoy { font-size: 13px; font-weight: 700; flex-shrink: 0; }
+
+  /* Disruption list */
+  .dis-item { display: flex; gap: 8px; padding: 7px 0; border-bottom: 1px solid #1a2e40; cursor: pointer; }
+  .dis-item:hover { background: #0d1e2f; margin: 0 -16px; padding: 7px 16px; }
+  .dis-icon { font-size: 16px; flex-shrink: 0; line-height: 1.4; }
+  .dis-text { font-size: 11.5px; color: #aabbcc; line-height: 1.4; }
+  .dis-text strong { color: #e0e8f0; display: block; margin-bottom: 1px; }
+
+  /* Footer */
+  #footer {
+    background: #0d1a27; padding: 6px 20px;
+    font-size: 10px; color: #4a6a80; text-align: center;
+    border-top: 1px solid #1e3a5c; flex-shrink: 0;
+  }
+
+  /* Leaflet overrides */
+  .leaflet-popup-content-wrapper { background: #0d1e2f; color: #e0e0e0; border: 1px solid #2a4a6a; border-radius: 10px; }
+  .leaflet-popup-tip { background: #0d1e2f; }
+  .leaflet-popup-content { margin: 12px 16px; font-size: 13px; line-height: 1.6; }
+  .popup-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 8px; border-bottom: 1px solid #2a4a6a; padding-bottom: 6px; }
+  .popup-row { display: flex; justify-content: space-between; gap: 16px; margin: 3px 0; }
+  .popup-label { color: #7a9ab5; }
+  .popup-val { font-weight: 600; color: #e0e8f0; }
+  .popup-yoy-pos { color: #4caf50; font-weight: 700; }
+  .popup-yoy-neg { color: #ef5350; font-weight: 700; }
+  .popup-disruption { background: #1a2a3a; border-left: 3px solid #ffa726; padding: 7px 10px; border-radius: 4px; font-size: 12px; margin-top: 8px; color: #c8d8e8; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div>
+    <h1>🚌 <span>redBus</span> Colombia — Bus Corridor Geographic Analysis</h1>
+    <div class="meta">Mar–May 2025 vs Mar–May 2026 · Top 8 Operators · Route-level YoY</div>
+  </div>
+  <div class="overall-badge">Overall Market: +0.5% YoY</div>
+</div>
+
+<div id="main">
+  <div id="map"></div>
+  <div id="sidebar">
+
+    <!-- Layers -->
+    <div class="panel">
+      <div class="panel-title">Map Layers</div>
+      <button class="layer-btn active" id="btn-dept" onclick="toggleLayer('dept')">
+        <div class="dot" style="background:#e8412a"></div> Department Performance
+      </button>
+      <button class="layer-btn active" id="btn-corridors" onclick="toggleLayer('corridors')">
+        <div class="dot" style="background:#00b894"></div> Corridors (YoY)
+      </button>
+      <button class="layer-btn active" id="btn-disruptions" onclick="toggleLayer('disruptions')">
+        <div class="dot" style="background:#ffa726"></div> Disruptions
+      </button>
+    </div>
+
+    <!-- Legend -->
+    <div class="panel">
+      <div class="panel-title">Department YoY Performance</div>
+      <div class="legend-grad"></div>
+      <div class="legend-labels"><span>≤ −20%</span><span>0%</span><span>≥ +20%</span></div>
+      <div style="margin-top:10px;font-size:11px;color:#7a9ab5;">
+        <div style="margin-bottom:4px;">— Corridor Lines</div>
+        <div style="display:flex;gap:12px;">
+          <span style="color:#4caf50;">━━ Growing</span>
+          <span style="color:#ef5350;">━━ Declining</span>
+        </div>
+        <div style="margin-top:4px;color:#999;">Line width = transaction volume</div>
+      </div>
+    </div>
+
+    <!-- Top Growing -->
+    <div class="panel">
+      <div class="panel-title">✅ Top Growing Corridors</div>
+      <div id="growing-list"></div>
+    </div>
+
+    <!-- Top Declining -->
+    <div class="panel">
+      <div class="panel-title">🔴 Top Declining Corridors</div>
+      <div id="declining-list"></div>
+    </div>
+
+    <!-- Disruptions -->
+    <div class="panel">
+      <div class="panel-title">⚠️ Key Disruptions</div>
+      <div id="disruption-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<div id="footer">redBus LATAM Data Platform · Colombia Analysis · Mar–May 2025 vs 2026 · raghava.goel@redbus.com</div>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+
+const DEPTS = {
+  'D.C':   { lat:4.711,  lon:-74.072, name:'Bogotá D.C.',         region:'Bogotá',    t25:21049, t26:19039, yoy:-9.5  },
+  'Ant':   { lat:6.244,  lon:-75.574, name:'Antioquia',            region:'Andean',    t25:17026, t26:17933, yoy:5.3   },
+  'Vac':   { lat:3.800,  lon:-76.532, name:'Valle del Cauca',      region:'Pacific',   t25:7510,  t26:7873,  yoy:4.8   },
+  'San':   { lat:7.119,  lon:-73.122, name:'Santander',            region:'Andean NE', t25:7437,  t26:7220,  yoy:-2.9  },
+  'Hui':   { lat:2.528,  lon:-75.282, name:'Huila',                region:'Andean S',  t25:5143,  t26:5357,  yoy:4.2   },
+  'Tol':   { lat:4.100,  lon:-75.100, name:'Tolima',               region:'Andean',    t25:5128,  t26:5649,  yoy:10.2  },
+  'Ris':   { lat:4.814,  lon:-75.694, name:'Risaralda',            region:'Andean',    t25:2971,  t26:3233,  yoy:8.8   },
+  'Cal':   { lat:5.070,  lon:-75.513, name:'Caldas',               region:'Andean',    t25:2696,  t26:2849,  yoy:5.7   },
+  'Atl':   { lat:10.964, lon:-74.796, name:'Atlántico',            region:'Caribbean', t25:2575,  t26:2328,  yoy:-9.6  },
+  'Mag':   { lat:10.420, lon:-74.215, name:'Magdalena',            region:'Caribbean', t25:2551,  t26:2282,  yoy:-10.5 },
+  'Ces':   { lat:10.000, lon:-73.253, name:'Cesar',                region:'Caribbean', t25:2446,  t26:2841,  yoy:16.1  },
+  'Qui':   { lat:4.534,  lon:-75.681, name:'Quindío',              region:'Andean',    t25:1898,  t26:1884,  yoy:-0.7  },
+  'Bol':   { lat:8.500,  lon:-74.881, name:'Bolívar',              region:'Caribbean', t25:1540,  t26:1528,  yoy:-0.8  },
+  'Meta':  { lat:3.500,  lon:-73.200, name:'Meta',                 region:'Llanos',    t25:1049,  t26:838,   yoy:-20.1 },
+  'N.San': { lat:7.893,  lon:-72.507, name:'Norte de Santander',   region:'Andean NE', t25:984,   t26:1046,  yoy:6.3   },
+  'Cor':   { lat:8.300,  lon:-75.885, name:'Córdoba',              region:'Caribbean', t25:711,   t26:745,   yoy:4.8   },
+  'Caq':   { lat:1.614,  lon:-75.607, name:'Caquetá',              region:'Amazon',    t25:673,   t26:688,   yoy:2.2   },
+  'Cun':   { lat:4.960,  lon:-73.500, name:'Cundinamarca',         region:'Andean',    t25:402,   t26:427,   yoy:6.2   },
+  'Suc':   { lat:9.304,  lon:-75.397, name:'Sucre',                region:'Caribbean', t25:341,   t26:413,   yoy:21.1  },
+  'Put':   { lat:1.152,  lon:-76.649, name:'Putumayo',             region:'Amazon',    t25:312,   t26:315,   yoy:1.0   },
+  'Boy':   { lat:5.535,  lon:-73.364, name:'Boyacá',               region:'Andean',    t25:249,   t26:234,   yoy:-6.0  },
+  'Cho':   { lat:5.694,  lon:-76.658, name:'Chocó',                region:'Pacific',   t25:74,    t26:34,    yoy:-54.1 },
+  'Nar':   { lat:1.500,  lon:-77.282, name:'Nariño',               region:'Pacific',   t25:379,   t26:244,   yoy:-35.6 },
+  'Cau':   { lat:2.441,  lon:-76.606, name:'Cauca',                region:'Pacific',   t25:471,   t26:127,   yoy:-73.0 },
+  'Ara':   { lat:6.854,  lon:-71.013, name:'Arauca dept',          region:'Llanos',    t25:54,    t26:21,    yoy:-61.1 },
+  'Cas':   { lat:5.338,  lon:-72.396, name:'Casanare',             region:'Llanos',    t25:80,    t26:60,    yoy:-25.0 },
+  'Guaj':  { lat:11.200, lon:-72.507, name:'La Guajira',           region:'Caribbean', t25:391,   t26:185,   yoy:-52.7 },
+  'N.San': { lat:7.893,  lon:-72.507, name:'Norte de Santander',   region:'Andean NE', t25:984,   t26:1046,  yoy:6.3   },
+};
+
+const CORRIDORS = [
+  // Growing
+  { id:'c1',  from:'Ant',   to:'Ris',   t25:347,  t26:1009, yoy:190.8, label:'Medellín ↔ Pereira',          disruption:'Diversion from Medellín–Bogotá highway landslide closures (May/Nov 2025)',   disType:'indirect' },
+  { id:'c2',  from:'Nar',   to:'Vac',   t25:448,  t26:1135, yoy:153.3, label:'Pasto ↔ Cali',                disruption:'ELN Comuneros del Sur disarmed Apr 2025 → Pacific route reopened',           disType:'security' },
+  { id:'c3',  from:'Ris',   to:'Vac',   t25:1155, t26:1669, yoy:44.5,  label:'Pereira ↔ Cali',              disruption:'Regional diversion; Bogotá–Eje Cafetero routes weakened by toll crisis',     disType:'indirect' },
+  { id:'c4',  from:'Atl',   to:'Bol',   t25:466,  t26:673,  yoy:44.4,  label:'Barranquilla ↔ Cartagena',    disruption:'Atl–Bol city hop growing despite broader Caribbean coast stress',             disType:'none' },
+  { id:'c5',  from:'Qui',   to:'Vac',   t25:909,  t26:1201, yoy:32.1,  label:'Armenia ↔ Cali',              disruption:'Eje Cafetero–Pacific arc benefiting from Bogotá avoidance',                  disType:'indirect' },
+  { id:'c6',  from:'Hui',   to:'Hui',   t25:913,  t26:1192, yoy:30.6,  label:'Huila Internal',              disruption:'Coomotor stronghold; stable Andean south corridor',                          disType:'none' },
+  { id:'c7',  from:'Ces',   to:'Mag',   t25:1135, t26:1431, yoy:26.1,  label:'Valledupar ↔ Santa Marta',   disruption:'Inland reroute away from blocked Troncal del Caribe (Jul 2025)',             disType:'indirect' },
+  { id:'c8',  from:'N.San', to:'San',   t25:869,  t26:1063, yoy:22.3,  label:'Cúcuta ↔ Bucaramanga',        disruption:'Venezuelan migration surge: 10M+ border crossings 2026 via Cúcuta',          disType:'migration' },
+  { id:'c9',  from:'Ant',   to:'Ant',   t25:4407, t26:5383, yoy:22.1,  label:'Antioquia Internal',          disruption:'Short regional hops grow as long-distance capital routes weaken',            disType:'indirect' },
+  { id:'c10', from:'Ant',   to:'Tol',   t25:3437, t26:4109, yoy:19.6,  label:'Medellín ↔ Ibagué',           disruption:'Cross-Andes corridor gaining share from disrupted Bogotá routes',            disType:'indirect' },
+  // Declining
+  { id:'c11', from:'Ant',   to:'D.C',   t25:5715, t26:4258, yoy:-25.5, label:'Medellín ↔ Bogotá',           disruption:'Medellín–Bogotá autopista: landslide closures May 2025, Nov 2025',           disType:'natural' },
+  { id:'c12', from:'Bol',   to:'Mag',   t25:804,  t26:405,  yoy:-49.6, label:'Cartagena ↔ Santa Marta',     disruption:'Troncal del Caribe blockade Jul 2025 + Caribbean floods Feb 2026 (50k+ displaced)', disType:'both' },
+  { id:'c13', from:'D.C',   to:'Qui',   t25:2283, t26:1635, yoy:-28.4, label:'Bogotá ↔ Armenia',            disruption:'Autopistas del Café reversal Jan 2026 + 20% toll hikes (Apr 2024–Jan 2026)', disType:'policy' },
+  { id:'c14', from:'D.C',   to:'Meta',  t25:2335, t26:1770, yoy:-24.2, label:'Bogotá ↔ Villavicencio',      disruption:'FARC-EMC conflict in Meta; ELN ceasefire breakdown Jan 2025; violence +45% Q1 2025', disType:'security' },
+  { id:'c15', from:'D.C',   to:'Ris',   t25:3169, t26:2508, yoy:-20.9, label:'Bogotá ↔ Pereira',            disruption:'Autopistas del Café concession uncertainty + toll hikes on Bogotá end',     disType:'policy' },
+  { id:'c16', from:'D.C',   to:'Vac',   t25:4612, t26:3846, yoy:-16.6, label:'Bogotá ↔ Cali',               disruption:'La Niña flooding Feb 2026 + Bogotá-wide travel suppression',               disType:'natural' },
+  { id:'c17', from:'D.C',   to:'San',   t25:5353, t26:4458, yoy:-16.7, label:'Bogotá ↔ Bucaramanga',        disruption:'Broader Bogotá outbound decline; landslide risk on mountain routes',         disType:'natural' },
+  { id:'c18', from:'Ant',   to:'Cau',   t25:499,  t26:331,  yoy:-33.7, label:'Medellín ↔ Cauca',            disruption:'Security deterioration in Cauca; ELN activity south of Valle del Cauca',    disType:'security' },
+];
+
+const DISRUPTIONS = [
+  { lat:6.10,  lon:-75.40, icon:'🌋', color:'#ff7043', label:'Landslide — Medellín–Bogotá Autopista',     detail:'Repeated closures (May 2025, Nov 2025) at Copacabana km. 40.8% of municipalities under alert.',  type:'natural'   },
+  { lat:9.00,  lon:-75.30, icon:'🌊', color:'#42a5f5', label:'Caribbean Floods — Feb 2026',               detail:'La Niña tropical storms. 50,000+ families displaced across Bolívar, Atlántico, Magdalena.',     type:'natural'   },
+  { lat:8.43,  lon:-75.10, icon:'🚧', color:'#ffa726', label:'Troncal del Caribe Blockade — Jul 2025',    detail:'Indigenous/peasant blockade near Tayrona Park. Main 1,020km Caribbean highway disrupted.',        type:'political' },
+  { lat:3.85,  lon:-73.50, icon:'⚔️', color:'#ef5350', label:'FARC-EMC Conflict — Meta/Llanos 2025',     detail:'FARC dissidents active in Meta. ELN ceasefire collapsed Jan 2025. Violence +45% Q1 2025.',        type:'security'  },
+  { lat:8.00,  lon:-73.10, icon:'⚔️', color:'#ef5350', label:'Catatumbo Clashes — Jan 2025',              detail:'ELN vs FARC-EMC. 60+ civilian deaths, 18,000+ displaced. Norte de Santander.',                   type:'security'  },
+  { lat:4.80,  lon:-75.60, icon:'🏗️', color:'#ab47bc', label:'Autopistas del Café Reversal — Jan 2026',  detail:'ANI reversed Eje Cafetero toll concession. Uncertainty + 20% toll hike suppressed Bogotá routes.', type:'policy'    },
+  { lat:1.40,  lon:-77.50, icon:'🕊️', color:'#26a69a', label:'ELN Disarmament — Nariño Apr 2025',        detail:'Comuneros del Sur faction disarmed. Pasto–Cali Pacific route reopened — corridor grew +153%.',     type:'security'  },
+  { lat:7.89,  lon:-72.51, icon:'🚶', color:'#26c6da', label:'Venezuela Migration — Cúcuta 2026',         detail:'10M+ border crossings in 2026. Cúcuta–Bucaramanga corridor grew +22% on migrant transit demand.',  type:'migration' },
+  { lat:4.30,  lon:-74.20, icon:'🌧️', color:'#42a5f5', label:'La Niña Flooding — Bogotá Region',         detail:'Sustained heavy rains Feb 2026. Bogotá outbound travel suppressed across all directions.',          type:'natural'   },
+];
+
+// ── MAP INIT ─────────────────────────────────────────────────────────────────
+
+const map = L.map('map', { center: [4.5, -74.5], zoom: 6, zoomControl: true });
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© OpenStreetMap © CARTO',
+  subdomains: 'abcd', maxZoom: 19
+}).addTo(map);
+
+// ── COLOUR HELPERS ───────────────────────────────────────────────────────────
+
+function yoyColor(yoy) {
+  if (yoy >= 30)  return '#2e7d32';
+  if (yoy >= 15)  return '#4caf50';
+  if (yoy >= 5)   return '#8bc34a';
+  if (yoy >= 0)   return '#cddc39';
+  if (yoy >= -5)  return '#fff176';
+  if (yoy >= -10) return '#ffb74d';
+  if (yoy >= -20) return '#ef9a9a';
+  return '#e53935';
+}
+
+function corridorColor(yoy) { return yoy > 0 ? '#00e676' : '#ff5252'; }
+
+// ── LAYER GROUPS ─────────────────────────────────────────────────────────────
+
+const layerDept        = L.layerGroup().addTo(map);
+const layerCorridors   = L.layerGroup().addTo(map);
+const layerDisruptions = L.layerGroup().addTo(map);
+
+const layerState = { dept: true, corridors: true, disruptions: true };
+
+function toggleLayer(name) {
+  layerState[name] = !layerState[name];
+  const layer = { dept: layerDept, corridors: layerCorridors, disruptions: layerDisruptions }[name];
+  if (layerState[name]) map.addLayer(layer); else map.removeLayer(layer);
+  document.getElementById('btn-' + name).classList.toggle('active', layerState[name]);
+}
+
+// ── TRY GEOJSON, FALLBACK TO CIRCLES ─────────────────────────────────────────
+
+const GEO_URL = 'https://raw.githubusercontent.com/jdaroesti/col-administrative-division-polygon/master/departamentos/departamentos.geojson';
+
+// Map GeoJSON dept names → our codes
+const GEO_NAME_MAP = {
+  'BOGOTÁ, D.C.':'D.C','BOGOTÁ D.C.':'D.C','BOGOTA, D.C.':'D.C',
+  'ANTIOQUIA':'Ant','VALLE DEL CAUCA':'Vac','SANTANDER':'San','HUILA':'Hui',
+  'TOLIMA':'Tol','RISARALDA':'Ris','CALDAS':'Cal','ATLÁNTICO':'Atl','ATLANTICO':'Atl',
+  'MAGDALENA':'Mag','CESAR':'Ces','QUINDÍO':'Qui','QUINDIO':'Qui','BOLÍVAR':'Bol','BOLIVAR':'Bol',
+  'META':'Meta','NORTE DE SANTANDER':'N.San','CÓRDOBA':'Cor','CORDOBA':'Cor',
+  'CAQUETÁ':'Caq','CAQUETA':'Caq','CUNDINAMARCA':'Cun','SUCRE':'Suc','PUTUMAYO':'Put',
+  'BOYACÁ':'Boy','BOYACA':'Boy','CHOCÓ':'Cho','CHOCO':'Cho','NARIÑO':'Nar','NARINO':'Nar',
+  'CAUCA':'Cau','ARAUCA':'Ara','CASANARE':'Cas','LA GUAJIRA':'Guaj','GUAJIRA':'Guaj',
+  'VICHADA':'Vic','GUAINÍA':'Gua','GUAINIA':'Gua','VAUPÉS':'Vau','VAUPES':'Vau',
+  'AMAZONAS':'Ama','GUAVIARE':'Gv','SAN ANDRÉS':'SA','SAN ANDRES':'SA'
+};
+
+fetch(GEO_URL)
+  .then(r => r.json())
+  .then(geo => {
+    L.geoJSON(geo, {
+      style: feature => {
+        const raw = (feature.properties.NOMBRE_DPT || feature.properties.DPTO_CNMBR || '').toUpperCase().trim();
+        const code = GEO_NAME_MAP[raw];
+        const d = DEPTS[code];
+        const yoy = d ? d.yoy : 0;
+        return {
+          fillColor: yoyColor(yoy),
+          fillOpacity: 0.65,
+          color: '#1a3a5c',
+          weight: 1.5
+        };
+      },
+      onEachFeature: (feature, layer) => {
+        const raw = (feature.properties.NOMBRE_DPT || feature.properties.DPTO_CNMBR || '').toUpperCase().trim();
+        const code = GEO_NAME_MAP[raw];
+        const d = DEPTS[code];
+        if (d) {
+          layer.bindPopup(deptPopup(d));
+          layer.on('mouseover', () => layer.setStyle({ fillOpacity: 0.9, weight: 2.5 }));
+          layer.on('mouseout',  () => layer.setStyle({ fillOpacity: 0.65, weight: 1.5 }));
+        }
+      }
+    }).addTo(layerDept);
+    renderCircles(true);
+  })
+  .catch(() => renderCircles(false));
+
+function deptPopup(d) {
+  const yoyStr = d.yoy > 0 ? `<span class="popup-yoy-pos">+${d.yoy}%</span>` : `<span class="popup-yoy-neg">${d.yoy}%</span>`;
+  return `<div class="popup-title">${d.name}</div>
+    <div class="popup-row"><span class="popup-label">Region</span><span class="popup-val">${d.region}</span></div>
+    <div class="popup-row"><span class="popup-label">2025 Txns</span><span class="popup-val">${d.t25.toLocaleString()}</span></div>
+    <div class="popup-row"><span class="popup-label">2026 Txns</span><span class="popup-val">${d.t26.toLocaleString()}</span></div>
+    <div class="popup-row"><span class="popup-label">YoY (origin)</span><span class="popup-val">${yoyStr}</span></div>`;
+}
+
+function renderCircles(hasPoly) {
+  // Always draw small label circles on top of polygons (or standalone if no geo)
+  Object.values(DEPTS).forEach(d => {
+    const r = Math.max(8, Math.sqrt(d.t25) * 0.18);
+    const c = L.circleMarker([d.lat, d.lon], {
+      radius: hasPoly ? Math.max(5, r * 0.6) : r,
+      fillColor: yoyColor(d.yoy),
+      fillOpacity: hasPoly ? 0.9 : 0.8,
+      color: '#0d1e2f',
+      weight: 1.5
+    }).bindPopup(deptPopup(d));
+    if (!hasPoly) c.addTo(layerDept);
+    else c.addTo(layerDept);
+  });
+}
+
+// ── CORRIDORS ────────────────────────────────────────────────────────────────
+
+function drawCorridors() {
+  CORRIDORS.forEach(c => {
+    const from = DEPTS[c.from], to = DEPTS[c.to];
+    if (!from || !to) return;
+
+    // Compute a curved midpoint (offset perpendicular to the line)
+    const mlat = (from.lat + to.lat) / 2;
+    const mlon = (from.lon + to.lon) / 2;
+    const dlat = to.lat - from.lat, dlon = to.lon - from.lon;
+    const len = Math.sqrt(dlat*dlat + dlon*dlon);
+    const curve = len * 0.25;
+    const clat = mlat - dlon / len * curve;
+    const clon = mlon + dlat / len * curve;
+
+    // Draw bezier as 20-segment polyline
+    const pts = [];
+    for (let t = 0; t <= 1; t += 0.05) {
+      const u = 1 - t;
+      const lat = u*u*from.lat + 2*u*t*clat + t*t*to.lat;
+      const lon = u*u*from.lon + 2*u*t*clon + t*t*to.lon;
+      pts.push([lat, lon]);
+    }
+
+    const vol = Math.max(c.t25, c.t26);
+    const w = Math.max(2, Math.min(9, vol / 700));
+    const col = corridorColor(c.yoy);
+    const yoyStr = c.yoy > 0 ? `+${c.yoy.toFixed(1)}%` : `${c.yoy.toFixed(1)}%`;
+
+    const line = L.polyline(pts, {
+      color: col, weight: w, opacity: 0.8,
+      dashArray: c.yoy < 0 ? '6 4' : null
+    });
+
+    const disHtml = c.disType !== 'none'
+      ? `<div class="popup-disruption">⚠️ ${c.disruption}</div>` : '';
+
+    line.bindPopup(`
+      <div class="popup-title">${c.label}</div>
+      <div class="popup-row"><span class="popup-label">2025 Txns</span><span class="popup-val">${c.t25.toLocaleString()}</span></div>
+      <div class="popup-row"><span class="popup-label">2026 Txns</span><span class="popup-val">${c.t26.toLocaleString()}</span></div>
+      <div class="popup-row"><span class="popup-label">YoY Change</span><span class="popup-val ${c.yoy>0?'popup-yoy-pos':'popup-yoy-neg'}">${yoyStr}</span></div>
+      ${disHtml}
+    `);
+    line.addTo(layerCorridors);
+  });
+}
+drawCorridors();
+
+// ── DISRUPTION MARKERS ───────────────────────────────────────────────────────
+
+function drawDisruptions() {
+  DISRUPTIONS.forEach((d, i) => {
+    const icon = L.divIcon({
+      html: `<div style="font-size:20px;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8));">${d.icon}</div>`,
+      className: '', iconSize: [24, 24], iconAnchor: [12, 12]
+    });
+    const marker = L.marker([d.lat, d.lon], { icon })
+      .bindPopup(`
+        <div class="popup-title">${d.icon} ${d.label}</div>
+        <div style="font-size:12.5px;color:#c8d8e8;line-height:1.5;">${d.detail}</div>
+      `);
+    marker.addTo(layerDisruptions);
+  });
+}
+drawDisruptions();
+
+// ── SIDEBAR LISTS ─────────────────────────────────────────────────────────────
+
+const growing  = CORRIDORS.filter(c => c.yoy > 0).sort((a,b) => b.yoy - a.yoy).slice(0, 8);
+const declining = CORRIDORS.filter(c => c.yoy < 0).sort((a,b) => a.yoy - b.yoy).slice(0, 8);
+
+function renderSidebarList(items, elId) {
+  const el = document.getElementById(elId);
+  items.forEach(c => {
+    const col = corridorColor(c.yoy);
+    const yoyStr = c.yoy > 0 ? `+${c.yoy.toFixed(0)}%` : `${c.yoy.toFixed(0)}%`;
+    const div = document.createElement('div');
+    div.className = 'corr-item';
+    div.innerHTML = `
+      <div class="corr-bar" style="background:${col}"></div>
+      <div class="corr-name">${c.label}</div>
+      <div class="corr-yoy" style="color:${col}">${yoyStr}</div>`;
+    div.onclick = () => {
+      const from = DEPTS[c.from], to = DEPTS[c.to];
+      if (from && to) {
+        const clat = (from.lat+to.lat)/2, clon = (from.lon+to.lon)/2;
+        map.setView([clat, clon], 7);
+      }
+    };
+    el.appendChild(div);
+  });
+}
+renderSidebarList(growing,  'growing-list');
+renderSidebarList(declining,'declining-list');
+
+const disEl = document.getElementById('disruption-list');
+DISRUPTIONS.forEach(d => {
+  const div = document.createElement('div');
+  div.className = 'dis-item';
+  div.innerHTML = `<div class="dis-icon">${d.icon}</div>
+    <div class="dis-text"><strong>${d.label}</strong>${d.detail}</div>`;
+  div.onclick = () => map.setView([d.lat, d.lon], 8);
+  disEl.appendChild(div);
+});
+</script>
+</body>
+</html>

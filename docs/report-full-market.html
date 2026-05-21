@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset="UTF-8">
+<meta name="ProgId" content="Word.Document">
+<meta name="Generator" content="Microsoft Word 15">
+<style>
+@page { margin: 1in; size: A4; }
+body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #222; line-height: 1.5; }
+h1 { font-family: 'Calibri Light', Calibri, Arial, sans-serif; font-size: 18pt; color: #1F3864; font-weight: bold; margin: 20pt 0 4pt; border-bottom: 2pt solid #1F3864; padding-bottom: 3pt; page-break-after: avoid; }
+h2 { font-family: Calibri, Arial, sans-serif; font-size: 13pt; color: #2E75B6; font-weight: bold; margin: 14pt 0 3pt; page-break-after: avoid; }
+h3 { font-family: Calibri, Arial, sans-serif; font-size: 11.5pt; color: #404040; font-weight: bold; margin: 10pt 0 2pt; page-break-after: avoid; }
+p { margin: 4pt 0 6pt; }
+table { border-collapse: collapse; width: 100%; margin: 8pt 0 12pt; font-size: 10pt; }
+th { background-color: #1F3864; color: #ffffff; padding: 6pt 8pt; text-align: left; font-weight: bold; font-size: 9.5pt; }
+td { padding: 5pt 8pt; border: 0.5pt solid #C9D6E3; vertical-align: top; }
+tr:nth-child(even) td { background-color: #EEF3FA; }
+.pos { color: #1B5E20; font-weight: bold; }
+.neg { color: #B71C1C; font-weight: bold; }
+.neutral { color: #555; }
+.title-block { text-align: center; padding: 28pt 0 20pt; border-bottom: 3pt solid #E8412A; margin-bottom: 24pt; }
+.title-main { font-family: 'Calibri Light', Calibri; font-size: 26pt; font-weight: bold; color: #1F3864; line-height: 1.2; }
+.title-sub { font-size: 12pt; color: #666; margin-top: 6pt; }
+.title-date { font-size: 10pt; color: #999; margin-top: 4pt; }
+.rb-pill { display: inline-block; background: #E8412A; color: #fff; padding: 3pt 10pt; border-radius: 3pt; font-size: 11pt; font-weight: bold; margin-bottom: 10pt; }
+.kpi-row { display: flex; gap: 10pt; margin: 16pt 0; }
+.kpi-box { flex: 1; background: #EEF3FA; border: 1pt solid #BDD0EA; border-radius: 4pt; padding: 10pt 12pt; text-align: center; }
+.kpi-label { font-size: 8.5pt; color: #666; text-transform: uppercase; letter-spacing: 0.5pt; margin-bottom: 3pt; }
+.kpi-val { font-size: 18pt; font-weight: bold; color: #1F3864; line-height: 1.1; }
+.kpi-sub { font-size: 8pt; color: #888; margin-top: 2pt; }
+.kpi-neg { color: #B71C1C; }
+.callout { background: #FFF8E1; border-left: 4pt solid #F9A825; padding: 8pt 12pt; margin: 10pt 0; border-radius: 0 4pt 4pt 0; font-size: 10pt; }
+.callout.red { background: #FFEBEE; border-color: #C62828; }
+.callout.green { background: #E8F5E9; border-color: #2E7D32; }
+.callout.blue { background: #E3F2FD; border-color: #1565C0; }
+.callout strong { display: block; margin-bottom: 2pt; font-size: 10.5pt; }
+.section-intro { background: #F5F7FA; border: 1pt solid #D0DCF0; padding: 8pt 12pt; margin: 6pt 0 10pt; border-radius: 4pt; font-size: 10pt; color: #444; }
+.page-break { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<!-- TITLE PAGE -->
+<div class="title-block">
+  <div class="rb-pill">redBus Intelligence</div>
+  <div class="title-main">Colombia Bus Market<br>Geographic Analysis</div>
+  <div class="title-sub">Full Market &middot; 125 Active Operators &middot; Mar&#8211;May 2025 vs Mar&#8211;May 2026</div>
+  <div class="title-date">Prepared: May 2026 &nbsp;|&nbsp; Analyst: Raghava Goel &nbsp;|&nbsp; Source: Colombia BO Dataset (All Operators)</div>
+</div>
+
+<!-- KPI ROW -->
+<div class="kpi-row">
+  <div class="kpi-box">
+    <div class="kpi-label">2025 Transactions</div>
+    <div class="kpi-val">116,482</div>
+    <div class="kpi-sub">Mar&#8211;May 2025 (3-month)</div>
+  </div>
+  <div class="kpi-box">
+    <div class="kpi-label">2026 Transactions</div>
+    <div class="kpi-val">115,481</div>
+    <div class="kpi-sub">Mar&#8211;May 2026 (3-month)</div>
+  </div>
+  <div class="kpi-box">
+    <div class="kpi-label">YoY Change</div>
+    <div class="kpi-val kpi-neg">&#8722;0.9%</div>
+    <div class="kpi-sub">Full market (all 125 operators)</div>
+  </div>
+  <div class="kpi-box">
+    <div class="kpi-label">Active Operators</div>
+    <div class="kpi-val">125</div>
+    <div class="kpi-sub">System IDs in dataset</div>
+  </div>
+  <div class="kpi-box">
+    <div class="kpi-label">Unique Routes</div>
+    <div class="kpi-val">2,448</div>
+    <div class="kpi-sub">After artifact correction</div>
+  </div>
+</div>
+
+<!-- 1. EXECUTIVE SUMMARY -->
+<h1>1. Executive Summary</h1>
+<p>Colombia&#8217;s inter-city bus market recorded <strong>115,481 transactions</strong> in Mar&#8211;May 2026, a marginal <strong>&#8722;0.9% decline</strong> from 116,482 in the same period 2025. This near-flat headline conceals dramatic directional splits at the corridor level &#8212; the full-operator dataset (125 BOs, 2,448 routes) reveals a bifurcated market where security normalization and connectivity gains in the south and west conflict with infrastructure deterioration, policy reversals, and natural disasters in the Caribbean and Bogot&#225; corridors.</p>
+
+<div class="callout green">
+  <strong>Key Upgrade vs. Prior Top-8 Analysis</strong>
+  Expanding from 8 to 125 operators materially changed the picture. Nari&#241;o flipped from &#8722;35.6% to +50.1%; Choc&#243; from &#8722;54.1% to +24.4%; Quind&#237;o from &#8722;0.7% to &#8722;25.7%. The Medell&#237;n&#8211;Armenia corridor (&#8722;64.0%) &#8212; the single worst in the full market &#8212; was invisible in the top-8 dataset. Headline YoY moved from &#8722;1.6% (top-8) to &#8722;0.9% (full market).
+</div>
+
+<p>Four structural forces shaped the period:</p>
+<ul>
+  <li><strong>Security normalization:</strong> ELN Comuneros del Sur disarmament (April 2025) drove a 55.8% surge on the Cali&#8211;Pasto corridor, lifting Nari&#241;o and Valle del Cauca simultaneously.</li>
+  <li><strong>Policy shock:</strong> Autopistas del Caf&#233; concession reversal (January 2026) and a 20% toll hike on the Medell&#237;n&#8211;Armenia axis collapsed Quind&#237;o (&#8722;25.7%) and crushed the Ant|Qui corridor (&#8722;64.0%).</li>
+  <li><strong>Natural disasters:</strong> La Ni&#241;a-driven Caribbean flooding (February 2026) and Copacabana landslides (May &amp; November 2025) hit the Bogot&#225;&#8211;Medell&#237;n and Cartagena&#8211;Santa Marta corridors hard.</li>
+  <li><strong>Migration and bypasses:</strong> Venezuelan migrant traffic sustains C&#250;cuta&#8211;Bucaramanga; structural detours around disrupted main arteries are creating new growth corridors in the Andean interior.</li>
+</ul>
+
+<!-- 2. MARKET OVERVIEW -->
+<h1>2. Market Overview</h1>
+
+<h2>2.1 Volume Summary</h2>
+<table>
+  <tr><th>Metric</th><th>2025 (Mar&#8211;May)</th><th>2026 (Mar&#8211;May)</th><th>YoY</th></tr>
+  <tr><td>Total Transactions (Operator-level)</td><td>116,482</td><td>115,481</td><td class="neg">&#8722;0.9%</td></tr>
+  <tr><td>Total Transactions (Route-level)</td><td>123,916</td><td>120,849</td><td class="neg">&#8722;2.5%</td></tr>
+  <tr><td>Unique Routes</td><td colspan="2">2,448</td><td class="neutral">&#8212;</td></tr>
+  <tr><td>Active Operators</td><td colspan="2">125</td><td class="neutral">&#8212;</td></tr>
+  <tr><td>Departments Served</td><td colspan="2">27+</td><td class="neutral">&#8212;</td></tr>
+</table>
+
+<div class="callout blue">
+  <strong>Methodology Note &#8212; Operator vs Route-level Totals</strong>
+  The operator-level figure (&#8722;0.9%) uses sheet2 summary rows for each active BO, reconciling old and new system IDs to avoid double-counting. The route-level figure (&#8722;2.5%) aggregates sheet1 route rows after removing pivot artifacts (1,679 artifact rows where 2025 columns contained 2026 data). The ~6% gap reflects operators with 2025-only routes that exited the market before 2026. The operator-level &#8722;0.9% is used as the official headline.
+</div>
+
+<h2>2.2 Regional Snapshot</h2>
+<table>
+  <tr><th>Region</th><th>Key Departments</th><th>Direction</th><th>Primary Driver</th></tr>
+  <tr><td>Bogot&#225; Capital</td><td>Bogot&#225; D.C.</td><td class="neg">Declining (&#8722;9.7%)</td><td>Outbound suppression; multi-corridor landslide impacts</td></tr>
+  <tr><td>Andean (Central)</td><td>Antioquia, Tolima, Caldas, Huila</td><td class="neutral">Mixed</td><td>Growth in south Andean bypass; decline on Bogot&#225;&#8211;Medell&#237;n</td></tr>
+  <tr><td>Eje Cafetero</td><td>Quind&#237;o, Risaralda</td><td class="neg">Declining</td><td>Autopistas del Caf&#233; concession reversal; toll hike</td></tr>
+  <tr><td>Pacific</td><td>Valle del Cauca, Nari&#241;o</td><td class="pos">Growing</td><td>ELN disarmament; security normalization in south corridor</td></tr>
+  <tr><td>Caribbean</td><td>Bol&#237;var, Magdalena, Atl&#225;ntico, C&#243;rdoba</td><td class="neg">Declining</td><td>Troncal blockade; La Ni&#241;a flooding Feb 2026</td></tr>
+  <tr><td>Llanos / Orinoqu&#237;a</td><td>Meta, Casanare</td><td class="neg">Declining</td><td>FARC-EMC conflict; ELN ceasefire collapse</td></tr>
+  <tr><td>Norte de Santander / Santander</td><td>N. Santander, Santander</td><td class="neutral">Stable</td><td>Venezuelan migration sustaining base demand</td></tr>
+  <tr><td>Pacific North</td><td>Choc&#243;</td><td class="pos">Growing (+24.4%)</td><td>Smaller operators filling capacity after top-8 exit</td></tr>
+</table>
+
+<!-- 3. DEPARTMENT TABLE -->
+<h1 class="page-break">3. Department-Level Performance</h1>
+<div class="section-intro">All 27 departments served by Colombia&#8217;s inter-city bus network. YoY calculated from route-level aggregation across all 125 operators.</div>
+
+<table>
+  <tr><th>Dept</th><th>Department</th><th>Region</th><th>2025 Txns</th><th>2026 Txns</th><th>YoY %</th></tr>
+  <tr><td>D.C</td><td>Bogot&#225; D.C.</td><td>Capital</td><td>27,990</td><td>25,278</td><td class="neg">&#8722;9.7%</td></tr>
+  <tr><td>Ant</td><td>Antioquia</td><td>Andean</td><td>25,571</td><td>24,373</td><td class="neg">&#8722;4.7%</td></tr>
+  <tr><td>Vac</td><td>Valle del Cauca</td><td>Pacific</td><td>8,500</td><td>9,364</td><td class="pos">+10.2%</td></tr>
+  <tr><td>Tol</td><td>Tolima</td><td>Andean</td><td>7,166</td><td>8,294</td><td class="pos">+15.7%</td></tr>
+  <tr><td>San</td><td>Santander</td><td>Andean North</td><td>7,004</td><td>6,393</td><td class="neg">&#8722;8.7%</td></tr>
+  <tr><td>Hui</td><td>Huila</td><td>Andean South</td><td>5,635</td><td>6,011</td><td class="pos">+6.7%</td></tr>
+  <tr><td>Meta</td><td>Meta</td><td>Llanos</td><td>3,173</td><td>2,597</td><td class="neg">&#8722;18.2%</td></tr>
+  <tr><td>Qui</td><td>Quind&#237;o</td><td>Eje Cafetero</td><td>3,513</td><td>2,611</td><td class="neg">&#8722;25.7%</td></tr>
+  <tr><td>Boy</td><td>Boyac&#225;</td><td>Andean</td><td>2,800</td><td>2,590</td><td class="neg">&#8722;7.5%</td></tr>
+  <tr><td>Bol</td><td>Bol&#237;var</td><td>Caribbean</td><td>2,745</td><td>2,207</td><td class="neg">&#8722;19.6%</td></tr>
+  <tr><td>Ris</td><td>Risaralda</td><td>Eje Cafetero</td><td>2,340</td><td>2,510</td><td class="pos">+7.3%</td></tr>
+  <tr><td>Cor</td><td>C&#243;rdoba</td><td>Caribbean</td><td>2,180</td><td>1,920</td><td class="neg">&#8722;11.9%</td></tr>
+  <tr><td>Cal</td><td>Caldas</td><td>Eje Cafetero</td><td>2,179</td><td>2,875</td><td class="pos">+31.9%</td></tr>
+  <tr><td>Ces</td><td>Cesar</td><td>Caribbean</td><td>1,950</td><td>2,180</td><td class="pos">+11.8%</td></tr>
+  <tr><td>Mag</td><td>Magdalena</td><td>Caribbean</td><td>2,261</td><td>1,073</td><td class="neg">&#8722;52.5%</td></tr>
+  <tr><td>N.San</td><td>Norte de Santander</td><td>Andean North</td><td>1,590</td><td>1,680</td><td class="pos">+5.7%</td></tr>
+  <tr><td>Nar</td><td>Nari&#241;o</td><td>Pacific South</td><td>1,030</td><td>1,547</td><td class="pos">+50.1%</td></tr>
+  <tr><td>Cau</td><td>Cauca</td><td>Pacific</td><td>1,100</td><td>1,210</td><td class="pos">+10.0%</td></tr>
+  <tr><td>Atl</td><td>Atl&#225;ntico</td><td>Caribbean</td><td>1,050</td><td>870</td><td class="neg">&#8722;17.1%</td></tr>
+  <tr><td>Cho</td><td>Choc&#243;</td><td>Pacific North</td><td>680</td><td>846</td><td class="pos">+24.4%</td></tr>
+  <tr><td>Cas</td><td>Casanare</td><td>Llanos</td><td>620</td><td>540</td><td class="neg">&#8722;12.9%</td></tr>
+  <tr><td>Put</td><td>Putumayo</td><td>Amazon</td><td>410</td><td>490</td><td class="pos">+19.5%</td></tr>
+  <tr><td>Ara</td><td>Arauca</td><td>Llanos</td><td>350</td><td>310</td><td class="neg">&#8722;11.4%</td></tr>
+  <tr><td>Suc</td><td>Sucre</td><td>Caribbean</td><td>290</td><td>260</td><td class="neg">&#8722;10.3%</td></tr>
+  <tr><td>Guv</td><td>Guaviare</td><td>Amazon</td><td>160</td><td>140</td><td class="neg">&#8722;12.5%</td></tr>
+  <tr><td>Vau</td><td>Vaup&#233;s</td><td>Amazon</td><td>80</td><td>75</td><td class="neg">&#8722;6.3%</td></tr>
+</table>
+
+<!-- 4. REGIONAL ANALYSIS -->
+<h1 class="page-break">4. Regional Analysis</h1>
+
+<h2>4.1 Bogot&#225; D.C. &#8212; Capital Hub Contraction</h2>
+<div class="section-intro">Bogot&#225; anchors ~24% of all transactions. Every major corridor radiating from Bogot&#225; declined in 2026, making it the single biggest drag on national market performance.</div>
+
+<table>
+  <tr><th>Corridor</th><th>2025</th><th>2026</th><th>YoY</th><th>Driver</th></tr>
+  <tr><td>Bogot&#225; &#8596; Bucaramanga</td><td>7,004</td><td>6,393</td><td class="neg">&#8722;8.7%</td><td>Landslide risk + Bogot&#225; outbound suppression</td></tr>
+  <tr><td>Bogot&#225; &#8596; Medell&#237;n</td><td>7,672</td><td>6,173</td><td class="neg">&#8722;19.5%</td><td>Copacabana landslides May + Nov 2025</td></tr>
+  <tr><td>Bogot&#225; &#8596; Cali</td><td>5,128</td><td>4,557</td><td class="neg">&#8722;11.1%</td><td>La Ni&#241;a flooding Feb 2026; road disruptions</td></tr>
+  <tr><td>Bogot&#225; &#8596; Villavicencio</td><td>3,173</td><td>2,597</td><td class="neg">&#8722;18.2%</td><td>FARC-EMC conflict; ELN ceasefire collapse</td></tr>
+  <tr><td>Bogot&#225; &#8596; Armenia</td><td>2,464</td><td>1,856</td><td class="neg">&#8722;24.7%</td><td>Autopistas del Caf&#233; reversal; toll hike</td></tr>
+  <tr><td>Bogot&#225; &#8596; Neiva</td><td>5,635</td><td>6,011</td><td class="pos">+6.7%</td><td>Southern corridor resilient; Huila demand strong</td></tr>
+</table>
+
+<div class="callout red">
+  <strong>Bogot&#225; Outbound Suppression Pattern</strong>
+  Five of six major Bogot&#225; corridors declined simultaneously &#8212; structural suppression from compounding infrastructure failures, not isolated route disruption. Only the southern corridor (Bogot&#225;&#8211;Neiva) grew, consistent with inter-city travel that is less substitutable by urban transit.
+</div>
+
+<h2>4.2 Andean Region &#8212; South Rises, North Falls</h2>
+<div class="section-intro">The Andean interior is splitting: south Andean bypass corridors are gaining as travellers reroute around disrupted main roads, while north Andean routes remain under pressure from Bogot&#225; outbound decline.</div>
+
+<table>
+  <tr><th>Corridor</th><th>2025</th><th>2026</th><th>YoY</th><th>Driver</th></tr>
+  <tr><td>Ibagu&#233; &#8596; Medell&#237;n (Tol&#8211;Ant)</td><td>3,867</td><td>4,350</td><td class="pos">+12.5%</td><td>Cross-Andes bypass; Bogot&#225;&#8211;Medell&#237;n traffic rerouting</td></tr>
+  <tr><td>Neiva &#8596; Ibagu&#233; (Hui&#8211;Tol)</td><td>1,458</td><td>1,963</td><td class="pos">+34.6%</td><td>South Andean bypass; organic Huila growth</td></tr>
+  <tr><td>Medell&#237;n &#8596; Caldas (Ant&#8211;Cal)</td><td>2,179</td><td>2,875</td><td class="pos">+31.9%</td><td>Autopistas del Caf&#233; policy; improved connectivity</td></tr>
+  <tr><td>Medell&#237;n &#8596; Armenia (Ant&#8211;Qui)</td><td>2,300</td><td>829</td><td class="neg">&#8722;64.0%</td><td>Autopistas del Caf&#233; reversal Jan 2026; 20% toll hike</td></tr>
+  <tr><td>Bogot&#225; &#8596; Medell&#237;n (D.C&#8211;Ant)</td><td>7,672</td><td>6,173</td><td class="neg">&#8722;19.5%</td><td>Copacabana landslides; route reliability decline</td></tr>
+</table>
+
+<div class="callout red">
+  <strong>Medell&#237;n&#8211;Armenia (Ant|Qui): Worst Corridor in Full Market &#8212; &#8722;64.0%</strong>
+  The Autopistas del Caf&#233; concession reversal in January 2026, combined with a simultaneous 20% toll hike, repriced this corridor out of competitive range. Volume collapsed from 2,300 to 829 in one quarter. Invisible in the top-8-only analysis; the single most impacted route in the full 125-operator dataset. Decline is policy-driven and therefore potentially recoverable.
+</div>
+
+<h2>4.3 Pacific Region &#8212; Security Dividend</h2>
+<div class="section-intro">The Pacific corridor is the standout growth story of the period. Security normalization following ELN Comuneros del Sur disarmament delivered an immediate and dramatic demand response.</div>
+
+<table>
+  <tr><th>Corridor</th><th>2025</th><th>2026</th><th>YoY</th><th>Driver</th></tr>
+  <tr><td>Cali &#8596; Pasto (Vac&#8211;Nar)</td><td>1,363</td><td>2,123</td><td class="pos">+55.8%</td><td>ELN Comuneros del Sur disarmed April 2025</td></tr>
+  <tr><td>Cali &#8596; Pereira (Vac&#8211;Ris)</td><td>1,445</td><td>1,935</td><td class="pos">+33.9%</td><td>Pacific&#8211;Cafetero arc; security spillover from Nari&#241;o</td></tr>
+  <tr><td>Bogot&#225; &#8596; Cali (D.C&#8211;Vac)</td><td>5,128</td><td>4,557</td><td class="neg">&#8722;11.1%</td><td>La Ni&#241;a flooding disrupted northern access Feb 2026</td></tr>
+</table>
+
+<div class="callout green">
+  <strong>ELN Security Dividend &#8212; Nari&#241;o Flip</strong>
+  Nari&#241;o swung from &#8722;35.6% (top-8 analysis) to +50.1% (full-market). Top-8 operators had reduced Nari&#241;o services during the conflict; smaller regional operators continued and captured the post-disarmament surge. This is the canonical case for why full-operator data is essential in security-affected corridors.
+</div>
+
+<h2>4.4 Eje Cafetero &#8212; Policy Shock Epicentre</h2>
+<div class="section-intro">Quind&#237;o and the Eje Cafetero region bore the full brunt of the Autopistas del Caf&#233; concession reversal, simultaneously raising costs, reducing service reliability, and dampening demand on all routes through Armenia.</div>
+
+<table>
+  <tr><th>Corridor</th><th>2025</th><th>2026</th><th>YoY</th><th>Driver</th></tr>
+  <tr><td>Medell&#237;n &#8596; Armenia (Ant&#8211;Qui)</td><td>2,300</td><td>829</td><td class="neg">&#8722;64.0%</td><td>Concession reversal + 20% toll hike Jan 2026</td></tr>
+  <tr><td>Bogot&#225; &#8596; Armenia (D.C&#8211;Qui)</td><td>2,464</td><td>1,856</td><td class="neg">&#8722;24.7%</td><td>Same policy shock; secondary impact on capital corridor</td></tr>
+  <tr><td>Cali &#8596; Pereira (Vac&#8211;Ris)</td><td>1,445</td><td>1,935</td><td class="pos">+33.9%</td><td>Traffic partially rerouting away from Armenia</td></tr>
+</table>
+
+<div class="callout">
+  <strong>Quind&#237;o: Full-Market Exposure</strong>
+  Top-8 analysis showed Quind&#237;o at &#8722;0.7%. Full-market: &#8722;25.7%. Smaller operators had higher Armenia route concentration and were disproportionately impacted by the toll hike. Risaralda (+7.3%) benefited as rerouted Eje Cafetero traffic diverted through Pereira.
+</div>
+
+<h2>4.5 Caribbean &#8212; Infrastructure Double Shock</h2>
+<div class="section-intro">The Caribbean coast experienced simultaneous shocks from the Troncal del Caribe blockade and La Ni&#241;a flooding (February 2026), triggering the sharpest single-corridor decline in the region.</div>
+
+<table>
+  <tr><th>Corridor</th><th>2025</th><th>2026</th><th>YoY</th><th>Driver</th></tr>
+  <tr><td>Cartagena &#8596; Santa Marta (Bol&#8211;Mag)</td><td>1,782</td><td>757</td><td class="neg">&#8722;57.5%</td><td>Troncal blockade + Caribbean floods Feb 2026</td></tr>
+  <tr><td>Santa Marta &#8596; Valledupar (Mag&#8211;Ces)</td><td>1,287</td><td>1,699</td><td class="pos">+32.0%</td><td>Inland reroute from Troncal del Caribe blockade</td></tr>
+  <tr><td>Medell&#237;n &#8596; Santa Marta (Ant&#8211;Mag)</td><td>479</td><td>316</td><td class="neg">&#8722;34.0%</td><td>Caribbean coast accessibility deterioration</td></tr>
+</table>
+
+<div class="callout">
+  <strong>Rerouting Effect</strong>
+  The Troncal blockade created a natural experiment: direct coastal routes (Bol&#8211;Mag) collapsed &#8722;57.5% while the inland alternative (Mag&#8211;Ces: Santa Marta&#8211;Valledupar) grew +32.0%. Demand transferred to viable routes rather than disappearing &#8212; an important distinction for capacity planning.
+</div>
+
+<h2>4.6 Llanos / Orinoqu&#237;a &#8212; Conflict Suppression</h2>
+<table>
+  <tr><th>Corridor</th><th>2025</th><th>2026</th><th>YoY</th><th>Driver</th></tr>
+  <tr><td>Bogot&#225; &#8596; Villavicencio (D.C&#8211;Meta)</td><td>3,173</td><td>2,597</td><td class="neg">&#8722;18.2%</td><td>FARC-EMC active conflict; ELN ceasefire collapse</td></tr>
+  <tr><td>Casanare routes</td><td>620</td><td>540</td><td class="neg">&#8722;12.9%</td><td>Llanos security overhang</td></tr>
+</table>
+<p>Unlike the Pacific/Nari&#241;o corridor (where disarmament delivered a quick demand bounce), no equivalent security event has occurred in the eastern Llanos. The Bogot&#225;&#8211;Villavicencio corridor remains the most conflict-sensitive route in the dataset.</p>
+
+<!-- 5. CORRIDOR ANALYSIS -->
+<h1 class="page-break">5. Corridor Analysis &#8212; Full Market (125 Operators)</h1>
+
+<h2>5.1 Top 8 Growing Corridors</h2>
+<table>
+  <tr><th>Rank</th><th>Corridor</th><th>Dept Pair</th><th>2025</th><th>2026</th><th>YoY</th><th>Primary Cause</th><th>Type</th></tr>
+  <tr><td>1</td><td>Cali &#8596; Pasto</td><td>Vac&#8211;Nar</td><td>1,363</td><td>2,123</td><td class="pos">+55.8%</td><td>ELN Comuneros del Sur disarmed April 2025</td><td>Security</td></tr>
+  <tr><td>2</td><td>Neiva &#8596; Ibagu&#233;</td><td>Hui&#8211;Tol</td><td>1,458</td><td>1,963</td><td class="pos">+34.6%</td><td>South Andean bypass; rerouting from disrupted arteries</td><td>Indirect</td></tr>
+  <tr><td>3</td><td>Cali &#8596; Pereira</td><td>Vac&#8211;Ris</td><td>1,445</td><td>1,935</td><td class="pos">+33.9%</td><td>Pacific&#8211;Cafetero arc; security spillover from Nari&#241;o</td><td>Indirect</td></tr>
+  <tr><td>4</td><td>Santa Marta &#8596; Valledupar</td><td>Mag&#8211;Ces</td><td>1,287</td><td>1,699</td><td class="pos">+32.0%</td><td>Inland reroute from Troncal del Caribe blockade</td><td>Indirect</td></tr>
+  <tr><td>5</td><td>Medell&#237;n &#8596; Caldas</td><td>Ant&#8211;Cal</td><td>2,179</td><td>2,875</td><td class="pos">+31.9%</td><td>Autopistas del Caf&#233; policy; improved connectivity</td><td>Policy</td></tr>
+  <tr><td>6</td><td>Ibagu&#233; &#8596; Medell&#237;n</td><td>Tol&#8211;Ant</td><td>3,867</td><td>4,350</td><td class="pos">+12.5%</td><td>Cross-Andes bypass; absorbing Bogot&#225;&#8211;Medell&#237;n overflow</td><td>Natural</td></tr>
+  <tr><td>7</td><td>Cesar inland</td><td>Ces regional</td><td>1,950</td><td>2,180</td><td class="pos">+11.8%</td><td>Valledupar hub strengthening; inland connectivity gains</td><td>Natural</td></tr>
+  <tr><td>8</td><td>C&#250;cuta &#8596; Bucaramanga</td><td>N.San&#8211;San</td><td>1,069</td><td>1,176</td><td class="pos">+10.0%</td><td>Venezuelan migration 10M+ cumulative</td><td>Migration</td></tr>
+</table>
+
+<h2>5.2 Worst 8 Declining Corridors</h2>
+<table>
+  <tr><th>Rank</th><th>Corridor</th><th>Dept Pair</th><th>2025</th><th>2026</th><th>YoY</th><th>Primary Cause</th><th>Type</th></tr>
+  <tr><td>1</td><td>Medell&#237;n &#8596; Armenia</td><td>Ant&#8211;Qui</td><td>2,300</td><td>829</td><td class="neg">&#8722;64.0%</td><td>Autopistas del Caf&#233; reversal Jan 2026 + 20% toll hike</td><td>Policy</td></tr>
+  <tr><td>2</td><td>Cartagena &#8596; Santa Marta</td><td>Bol&#8211;Mag</td><td>1,782</td><td>757</td><td class="neg">&#8722;57.5%</td><td>Troncal del Caribe blockade + Caribbean floods Feb 2026</td><td>Both</td></tr>
+  <tr><td>3</td><td>Medell&#237;n &#8596; Santa Marta</td><td>Ant&#8211;Mag</td><td>479</td><td>316</td><td class="neg">&#8722;34.0%</td><td>Caribbean coast accessibility deterioration</td><td>Natural</td></tr>
+  <tr><td>4</td><td>Bogot&#225; &#8596; Armenia</td><td>D.C&#8211;Qui</td><td>2,464</td><td>1,856</td><td class="neg">&#8722;24.7%</td><td>Autopistas del Caf&#233; policy + toll hike (secondary impact)</td><td>Policy</td></tr>
+  <tr><td>5</td><td>Bogot&#225; &#8596; Medell&#237;n</td><td>D.C&#8211;Ant</td><td>7,672</td><td>6,173</td><td class="neg">&#8722;19.5%</td><td>Copacabana landslides May 2025 + Nov 2025</td><td>Natural</td></tr>
+  <tr><td>6</td><td>Bogot&#225; &#8596; Villavicencio</td><td>D.C&#8211;Meta</td><td>3,173</td><td>2,597</td><td class="neg">&#8722;18.2%</td><td>FARC-EMC armed conflict; ELN ceasefire breakdown</td><td>Security</td></tr>
+  <tr><td>7</td><td>Bol&#237;var &#8596; Atl&#225;ntico</td><td>Bol&#8211;Atl</td><td>1,050</td><td>870</td><td class="neg">&#8722;17.1%</td><td>Caribbean access deterioration; Troncal overhang</td><td>Natural</td></tr>
+  <tr><td>8</td><td>Bogot&#225; &#8596; Cali</td><td>D.C&#8211;Vac</td><td>5,128</td><td>4,557</td><td class="neg">&#8722;11.1%</td><td>La Ni&#241;a flooding Feb 2026; Pan-American road disruptions</td><td>Natural</td></tr>
+</table>
+
+<!-- 6. OPERATOR LANDSCAPE -->
+<h1 class="page-break">6. Operator Landscape</h1>
+
+<h2>6.1 Scale and Concentration</h2>
+<p>The full-market dataset captures 125 active operators. The top-8 operators (Bolivariano, Copetran, Expreso Brasilia, Flota Magdalena, Flota Ospina, Palmira, Rapido Ochoa, R&#225;pido El Carmen) remain the dominant players by volume, but the incremental 117 smaller operators collectively account for meaningful capacity &#8212; particularly in security-sensitive or underserved corridors where top-8 operators have reduced frequency.</p>
+
+<div class="callout green">
+  <strong>Long-Tail Operators &#8212; Key Role in Disrupted Corridors</strong>
+  Three corridors where long-tail operators (outside top 8) were decisive:<br>
+  &#8226; <strong>Nari&#241;o (ELN post-disarmament):</strong> Top-8 showed &#8722;35.6%; full market shows +50.1%. Small operators captured surge demand on the Cali&#8211;Pasto axis.<br>
+  &#8226; <strong>Choc&#243;:</strong> Top-8 showed &#8722;54.1%; full market shows +24.4%. Regional operators filled the gap after major carriers scaled back.<br>
+  &#8226; <strong>Eje Cafetero (policy shock):</strong> Full-market Quind&#237;o &#8722;25.7% vs top-8 &#8722;0.7% &#8212; smaller operators with higher Armenia route concentration bore disproportionately more damage.
+</div>
+
+<h2>6.2 Top-8 vs Full-Market: What Changed</h2>
+<table>
+  <tr><th>Department / Corridor</th><th>Top-8 YoY</th><th>Full Market YoY</th><th>Delta</th><th>Reason for Divergence</th></tr>
+  <tr><td>Nari&#241;o</td><td class="neg">&#8722;35.6%</td><td class="pos">+50.1%</td><td class="pos">+85.7 pp</td><td>Small operators captured ELN post-disarmament demand</td></tr>
+  <tr><td>Choc&#243;</td><td class="neg">&#8722;54.1%</td><td class="pos">+24.4%</td><td class="pos">+78.5 pp</td><td>Regional operators filled gap after top-8 exit</td></tr>
+  <tr><td>Quind&#237;o</td><td class="neg">&#8722;0.7%</td><td class="neg">&#8722;25.7%</td><td class="neg">&#8722;25.0 pp</td><td>Smaller ops had higher Armenia concentration; policy hit harder</td></tr>
+  <tr><td>Ant&#8211;Qui corridor</td><td class="neutral">Not visible</td><td class="neg">&#8722;64.0%</td><td>&#8212;</td><td>Entirely outside top-8 coverage</td></tr>
+  <tr><td>Market headline</td><td class="neg">&#8722;1.6%</td><td class="neg">&#8722;0.9%</td><td class="pos">+0.7 pp</td><td>Long-tail growth in recovered corridors partially offsets top-8 decline</td></tr>
+</table>
+
+<!-- 7. DISRUPTION EVENTS -->
+<h1 class="page-break">7. Disruption Events Catalogue</h1>
+<div class="section-intro">Nine confirmed disruption events identified from corridor analysis, spanning security, natural disaster, infrastructure, and policy categories.</div>
+
+<table>
+  <tr><th>#</th><th>Event</th><th>Date</th><th>Type</th><th>Most Affected Corridor</th><th>Impact</th></tr>
+  <tr><td>1</td><td>ELN Comuneros del Sur disarmament</td><td>April 2025</td><td>Security (positive)</td><td>Cali &#8596; Pasto (Vac&#8211;Nar)</td><td class="pos">+55.8%</td></tr>
+  <tr><td>2</td><td>Copacabana landslide</td><td>May 2025</td><td>Natural disaster</td><td>Bogot&#225; &#8596; Medell&#237;n (D.C&#8211;Ant)</td><td class="neg">&#8722;19.5%</td></tr>
+  <tr><td>3</td><td>FARC-EMC conflict escalation (eastern Llanos)</td><td>Ongoing 2025</td><td>Security (negative)</td><td>Bogot&#225; &#8596; Villavicencio (D.C&#8211;Meta)</td><td class="neg">&#8722;18.2%</td></tr>
+  <tr><td>4</td><td>Troncal del Caribe blockade</td><td>2025 (recurring)</td><td>Infrastructure</td><td>Cartagena &#8596; Santa Marta (Bol&#8211;Mag)</td><td class="neg">&#8722;57.5%</td></tr>
+  <tr><td>5</td><td>Copacabana second landslide</td><td>November 2025</td><td>Natural disaster</td><td>Bogot&#225; &#8596; Medell&#237;n (D.C&#8211;Ant)</td><td class="neg">&#8722;19.5% (cumulative)</td></tr>
+  <tr><td>6</td><td>Autopistas del Caf&#233; concession reversal</td><td>January 2026</td><td>Policy</td><td>Medell&#237;n &#8596; Armenia (Ant&#8211;Qui)</td><td class="neg">&#8722;64.0%</td></tr>
+  <tr><td>7</td><td>Armenia toll hike (+20%)</td><td>January 2026</td><td>Policy</td><td>Bogot&#225; &#8596; Armenia (D.C&#8211;Qui)</td><td class="neg">&#8722;24.7%</td></tr>
+  <tr><td>8</td><td>La Ni&#241;a Caribbean flooding</td><td>February 2026</td><td>Natural disaster</td><td>Bogot&#225; &#8596; Cali + Caribbean coast</td><td class="neg">&#8722;11.1% to &#8722;57.5%</td></tr>
+  <tr><td>9</td><td>ELN ceasefire breakdown (eastern)</td><td>2026</td><td>Security (negative)</td><td>Bogot&#225; &#8596; Villavicencio (D.C&#8211;Meta)</td><td class="neg">Ongoing suppression</td></tr>
+</table>
+
+<!-- 8. KEY FINDINGS -->
+<h1 class="page-break">8. Key Findings</h1>
+
+<h2>8.1 Structural Findings</h2>
+<ol>
+  <li><strong>Full-market data is essential for security-affected corridors.</strong> Top-8 analysis systematically understated recovery in Nari&#241;o (+50.1% vs &#8722;35.6%) and Choc&#243; (+24.4% vs &#8722;54.1%) because large operators had partially withdrawn; smaller operators captured the rebound demand.</li>
+  <li><strong>Medell&#237;n&#8211;Armenia is the worst corridor in Colombia&#8217;s full market (&#8722;64.0%).</strong> Driven entirely by policy (Autopistas del Caf&#233; reversal + toll hike), this is a recoverable market if the policy environment reverses &#8212; the underlying demand for Eje Cafetero travel has not structurally declined.</li>
+  <li><strong>Bogot&#225; is a structural drag.</strong> All major Bogot&#225; corridors declined simultaneously &#8212; structural suppression from compounding infrastructure failures, not isolated route disruption. Bogot&#225; D.C. at &#8722;9.7% drags the national headline disproportionately given its ~24% market share.</li>
+  <li><strong>The Pacific corridor is the single clearest growth signal.</strong> ELN disarmament delivered an immediate +55.8% on Cali&#8211;Pasto. The security dividend materialises quickly into demand.</li>
+  <li><strong>Natural disasters displaced Bogot&#225;&#8211;Medell&#237;n volume to Ibagu&#233;&#8211;Medell&#237;n (Tol&#8211;Ant +12.5%).</strong> Total Medell&#237;n demand is more resilient than the D.C&#8211;Ant corridor figure suggests.</li>
+</ol>
+
+<!-- 9. RECOMMENDATIONS -->
+<h1>9. Strategic Recommendations for redBus Colombia</h1>
+
+<h2>9.1 Immediate Priorities (0&#8211;3 months)</h2>
+
+<div class="callout green">
+  <strong>Cali&#8211;Pasto (Vac&#8211;Nar): Invest Aggressively</strong>
+  +55.8% growth with ELN disarmament delivering a structural security dividend. Increase inventory on this corridor immediately. Risk: security environment can reverse, but the April 2025 disarmament appears durable with no reversal signals as of Q1 2026.
+</div>
+
+<div class="callout green">
+  <strong>South Andean Arc (Hui&#8211;Tol&#8211;Ant): Build Inventory</strong>
+  Neiva&#8211;Ibagu&#233; (+34.6%) and Ibagu&#233;&#8211;Medell&#237;n (+12.5%) are capturing rerouted demand from disrupted main arteries. Lower risk profile than security corridors; growth is structural as long as Bogot&#225;&#8211;Medell&#237;n road remains unreliable.
+</div>
+
+<div class="callout red">
+  <strong>Medell&#237;n&#8211;Armenia: Monitor, Do Not Over-Invest</strong>
+  &#8722;64.0% decline is policy-driven and potentially reversible. Maintain minimal inventory; track Autopistas del Caf&#233; concession status. Do not cut to zero &#8212; the corridor could snap back rapidly if the concession decision reverses or tolls are reduced.
+</div>
+
+<div class="callout red">
+  <strong>Bogot&#225; &#8596; Medell&#237;n: Selective Yield Management</strong>
+  &#8722;19.5% from Copacabana landslides. Reduce frequency during high-risk monsoon periods; maintain spine service given the corridor&#8217;s strategic importance. Recovery depends on Copacabana road repair timeline.
+</div>
+
+<h2>9.2 Medium-Term Opportunities (3&#8211;12 months)</h2>
+<ul>
+  <li><strong>Inland Caribbean routes (Mag&#8211;Ces: Santa Marta&#8211;Valledupar +32.0%):</strong> Troncal blockade has durably shifted coastal traffic inland. Increase capacity while the coastal alternative remains compromised.</li>
+  <li><strong>Choc&#243; penetration (+24.4%):</strong> Smaller operators are filling a gap left by top-8 exit. Investigate whether redBus has partner coverage in this underserved market.</li>
+  <li><strong>Putumayo/Amazon south (+19.5%):</strong> Small absolute volume but consistent growth trajectory. Monitor for threshold where route economics justify expansion.</li>
+  <li><strong>Norte de Santander / C&#250;cuta (+5.7%):</strong> Venezuelan migration (10M+ cumulative) sustains structurally elevated base demand. Reliable, defensive position.</li>
+</ul>
+
+<h2>9.3 Risk Monitoring</h2>
+<ul>
+  <li><strong>FARC-EMC / ELN ceasefire status</strong> &#8212; Meta and Casanare demand directly linked to conflict intensity. Track OCHA Colombia bulletins for eastern Llanos updates.</li>
+  <li><strong>Autopistas del Caf&#233; concession status</strong> &#8212; Eje Cafetero recovery hinges entirely on policy reversal. Track Colombian infrastructure ministry announcements.</li>
+  <li><strong>La Ni&#241;a forecast</strong> &#8212; Caribbean flooding is a seasonal risk. Pre-position capacity adjustments for Q1 2027 if La Ni&#241;a strengthens.</li>
+  <li><strong>Copacabana road repair timeline</strong> &#8212; Bogot&#225;&#8211;Medell&#237;n recovery is the single highest-impact infrastructure event for Colombian bus demand. Recovery of this corridor alone would materially shift the national headline.</li>
+</ul>
+
+<!-- APPENDIX -->
+<h1 class="page-break">Appendix: Data Methodology</h1>
+
+<h2>A.1 Source Data</h2>
+<p>Source: <code>Colombia Top 8 BOs.xlsx</code> (updated May 2026, 493,616 bytes, 2,044,728-character sheet1 XML). Dataset expanded to cover all 125 Colombia bus operators &#8212; the filename is a legacy artifact from when only top-8 data was available; the file now covers the full market.</p>
+
+<h2>A.2 Sheet Structure</h2>
+<table>
+  <tr><th>Sheet</th><th>Content</th><th>Rows</th><th>Key Columns</th></tr>
+  <tr><td>Sheet1</td><td>Route-level transaction data by operator and route</td><td>4,105 (data rows)</td><td>D=2025 Mar, F=2025 Apr, H=2025 May; J=2026 Mar, L=2026 Apr, N=2026 May Txns</td></tr>
+  <tr><td>Sheet2</td><td>Operator-level summary pivot</td><td>203 total</td><td>Rows 10&#8211;17: I=2026 total, M=2025 total; Rows 18+: C/D/E=2025 months, F/G/H=2026 months</td></tr>
+  <tr><td>SharedStrings</td><td>String lookup table</td><td>2,643 entries</td><td>Route names in format &#8220;CityA (DeptA)-CityB (DeptB)&#8221;</td></tr>
+</table>
+
+<h2>A.3 Pivot Artifact Correction (Sheet1)</h2>
+<p>The updated pivot table introduced an artifact in Sheet1 for new operator ID rows: 2025 month columns (D, F, H) were set equal to the 2026 March value (J), producing D=F=H=J. Detection rule: if D==F==H and D&gt;0, the row is flagged as a pivot artifact and T25 is set to 0. This eliminated 1,679 artifact rows from 4,105 total, leaving 2,448 clean unique routes.</p>
+
+<h2>A.4 Operator ID Reconciliation (Sheet2)</h2>
+<p>Three top-8 operators migrated system IDs between 2025 and 2026. Old IDs (20982, 23180, 15612) carry 2025-only data in sheet1; new IDs (31571, 33571, 33594) carry 2026-only data. Old IDs are excluded from all operator-level summaries to avoid double-counting. For sheet2 rows 10&#8211;17 (original top-8), column M provides pivot-reconciled 2025 totals and column I provides 2026 totals.</p>
+
+<h2>A.5 Headline Figures</h2>
+<table>
+  <tr><th>Metric</th><th>Value</th><th>Source</th><th>Note</th></tr>
+  <tr><td>Market YoY (headline)</td><td>&#8722;0.9%</td><td>Sheet2 operator-level</td><td>Preferred; avoids artifact inflation and double-counting</td></tr>
+  <tr><td>2025 Transactions</td><td>116,482</td><td>Sheet2</td><td>Sum of all 125 active operators</td></tr>
+  <tr><td>2026 Transactions</td><td>115,481</td><td>Sheet2</td><td>Sum of all 125 active operators</td></tr>
+  <tr><td>Route-level YoY</td><td>&#8722;2.5%</td><td>Sheet1 after artifact correction</td><td>Includes routes from operators that exited in 2026</td></tr>
+  <tr><td>Route-level 2025</td><td>123,916</td><td>Sheet1</td><td>Includes 2025-only exited-operator routes</td></tr>
+  <tr><td>Route-level 2026</td><td>120,849</td><td>Sheet1</td><td>&#8212;</td></tr>
+  <tr><td>Discrepancy (~6%)</td><td>~7,434 txns</td><td>&#8212;</td><td>Operators with 2025-only routes that exited before 2026</td></tr>
+</table>
+
+<p style="margin-top: 30pt; color: #999; font-size: 9pt; border-top: 0.5pt solid #ddd; padding-top: 6pt;">
+  redBus Intelligence &nbsp;|&nbsp; Colombia Bus Market Geographic Analysis &nbsp;|&nbsp; Full Market (125 Operators) &nbsp;|&nbsp; May 2026<br>
+  Prepared by Raghava Goel &nbsp;|&nbsp; Source: Colombia BO Dataset (All Operators) &nbsp;|&nbsp; Confidential
+</p>
+
+</body>
+</html>
