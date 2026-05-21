@@ -13,3 +13,7 @@ Thumbs.db
 
 # Portable git tooling (local only)
 .tools/
+
+# Local push helpers (never commit)
+push-payload.json
+push-batch*.json

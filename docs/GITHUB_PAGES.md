@@ -7,7 +7,7 @@ cd colombia-bo-geographic-analysis
 git init
 git add .
 git commit -m "Add Colombia BO geographic analysis workflow and docs site"
-git remote add origin https://github.com/<org>/<repo>.git
+git remote add origin https://github.com/raghavagoel-ctrl/CO-Market-Analysis.git
 git push -u origin main
 ```
 
@@ -18,11 +18,14 @@ git push -u origin main
 1. GitHub → **Settings** → **Pages**
 2. **Source:** Deploy from branch
 3. **Branch:** `main` · **Folder:** `/docs`
-4. Save — site URL: `https://<org>.github.io/<repo>/`
+4. Save — site URL: `https://raghavagoel-ctrl.github.io/CO-Market-Analysis/`
 
-## 3. Fix doc links on the landing page
+## 3. Site URLs
 
-Edit `docs/index.html` and replace `YOUR_ORG/YOUR_REPO` in the documentation links with your repo path.
+| Page | URL |
+|------|-----|
+| Hub | https://raghavagoel-ctrl.github.io/CO-Market-Analysis/ |
+| Map | https://raghavagoel-ctrl.github.io/CO-Market-Analysis/map.html |
 
 ## 4. Verify locally (optional)
 
